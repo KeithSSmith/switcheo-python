@@ -1,0 +1,3 @@
+neo-python==0.7.5
+neo-python-rpc==0.2.1
+requests==2.19.1
