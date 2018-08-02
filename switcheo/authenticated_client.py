@@ -36,23 +36,6 @@ class AuthenticatedClient(PublicClient):
         }
         return self.request.get(path='/balances', params=balance_params)
 
-    def get_pairs(self, base=''):
-        if base != '' and base in ["NEO", "GAS", "SWTH", "USD"]:
-            base_params = {
-                "bases": [
-                    base
-                ]
-            }
-            return self.request.get(path='/pairs', params=base_params)
-        else:
-            return self.request.get(path='/pairs')
-
-    def get_trade_pairs(self):
-        return self.request.get(path='/pairs')
-
-    def get_contracts(self):
-        return self.request.get(path='/contracts')
-
     def deposit(self, asset, amount, kp):
         deposit_details = self.create_deposit(asset=asset, amount=amount, kp=kp)
         self.execute_deposit(deposit_details=deposit_details, kp=kp)
@@ -120,8 +103,9 @@ class AuthenticatedClient(PublicClient):
         print(api_params)
         return self.request.post(path='/orders', json_data=api_params)
 
-    def execute_order(self, withdrawal_details, kp):
-        withdrawal_id = withdrawal_details['id']
+    ########  This function is not ready  ########
+    def execute_order(self, order_details, kp):
+        order_id = order_details['id']
         signable_params = {
             'id': withdrawal_id,
             'timestamp': get_epoch_milliseconds()
