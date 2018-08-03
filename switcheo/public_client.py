@@ -13,6 +13,12 @@ class PublicClient(object):
         self.request = Request(api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30)
         self.blockchain = blockchain
 
+    def get_exchange_status(self):
+        return self.request.status()
+
+    def get_exchange_time(self):
+        return self.request.get(path='/exchange/timestamp')
+
     def get_candlesticks(self, pair, start_time, end_time, interval):
         candle_params = {
             "pair": pair,
@@ -65,3 +71,21 @@ class PublicClient(object):
 
     def get_contracts(self):
         return self.request.get(path='/contracts')
+
+    def get_orders(self, address):
+        order_params = {
+            "address": address,
+            "contract_hash": self.get_contracts()["NEO"]["V2"]
+        }
+        return self.request.get(path='/orders', params=order_params)
+
+    def get_balance(self, address):
+        balance_params = {
+            "addresses": [
+                address
+            ],
+            "contract_hashes": [
+                self.get_contracts()["NEO"]["V2"]
+            ]
+        }
+        return self.request.get(path='/balances', params=balance_params)

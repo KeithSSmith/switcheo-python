@@ -69,18 +69,23 @@ def num2varint(num):
 class Request(object):
 
     def __init__(self, api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30):
-        self.url = api_url.rstrip('/')
-        self.url = self.url + api_version
+        self.base_url = api_url.rstrip('/')
+        self.url = self.base_url + api_version
         self.timeout = timeout
 
     def get(self, path, params=None):
         """Perform GET request"""
-        r = requests.get(self.url + path, params=params, timeout=self.timeout)
+        r = requests.get(url=self.url + path, params=params, timeout=self.timeout)
         r.raise_for_status()
         return r.json()
 
     def post(self, path, data=None, json_data=None, params=None):
         """Perform POST request"""
-        r = requests.post(self.url + path, data=data, json=json_data, params=params, timeout=self.timeout)
+        r = requests.post(url=self.url + path, data=data, json=json_data, params=params, timeout=self.timeout)
+        r.raise_for_status()
+        return r.json()
+
+    def status(self):
+        r = requests.get(url=self.base_url)
         r.raise_for_status()
         return r.json()

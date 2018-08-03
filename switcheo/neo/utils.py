@@ -22,6 +22,14 @@ def sign_transaction(transaction, private_key_hex):
     return sign_message(encoded_message=serialized_transaction, private_key_hex=private_key_hex)
 
 
+def sign_array(messages, private_key_hex):
+    message_dict = {}
+    for message in messages:
+        message_dict[message['id']] = sign_transaction(transaction=message['txn'],
+                                                       private_key_hex=private_key_hex)
+    return message_dict
+
+
 def encode_message(message):
     message_hex = binascii.hexlify(stringify_message(message).encode('utf-8')).decode()
     message_hex_length = hex(int(len(message_hex) / 2))[2:]

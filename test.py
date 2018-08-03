@@ -19,7 +19,7 @@ from neo.Wallets.utils import to_aes_key
 
 if __name__ == "__main__":
     # wallet = UserWallet.Create(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
-    wallet = UserWallet.Open(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
+    wallet = UserWallet.Open(path='test_switcheo_wallet2', password=to_aes_key('switcheo'))
     wif = wallet.GetKeys()[0].Export()
     prikey = KeyPair.PrivateKeyFromWIF(wif)
     keypair = KeyPair(priv_key=prikey)
@@ -35,6 +35,10 @@ if __name__ == "__main__":
     print(neo_get_address_from_scripthash(keypair.GetAddress()))
 
     switcheo_pub_client = PublicClient()
+    print(switcheo_pub_client.get_exchange_status())
+    print(switcheo_pub_client.get_exchange_time())
+    print(switcheo_pub_client.get_orders(address=neo_get_scripthash_from_private_key(prikey)))
+    print(switcheo_pub_client.get_balance(neo_get_scripthash_from_private_key(prikey)))
     print(switcheo_pub_client.get_candlesticks(pair="SWTH_NEO",
                                                start_time=round(time.time()) - 150000,
                                                end_time=round(time.time()),
@@ -50,18 +54,13 @@ if __name__ == "__main__":
 
     # You can only have 1 "active" deposit/withdrawal at a time, if it's still waiting
     # for the deposit confirmation you will get a 422 error until the previous deposit is complete.
+    print(switcheo_client.deposit(asset=product_dict["SWTH"], amount=1, kp=keypair))
+    # switcheo_client.withdrawal(asset=product_dict["SWTH"], amount=0.001, kp=keypair)
 
-    # switcheo_client.deposit(asset=product_dict["SWTH"], amount=1, kp=keypair)
+    # Placing a limit buy order on the Switcheo/NEO trade pair
+    # Offering to buy 100 SWTH at the price of 0.0002 NEO for a total of 0.02 NEO
+    # This also uses the SWTH token to pay for any trade fees incurred on fills
+    order = switcheo_client.order(kp=keypair, trade_pair="SWTH_NEO", side="buy", price=0.0002,
+                                  amount=100, use_native_token=True, order_type="limit")
 
-    switcheo_client.withdrawal(asset="SWTH", amount=0.001, kp=keypair)
-
-    print(switcheo_client.get_balance(neo_get_scripthash_from_private_key(prikey)))
-
-    #### This is not working as of yet. ####
-    # order = switcheo_client.create_order(kp=keypair, trade_pair="SWTH_NEO", side="buy", price=0.002,
-                                         # amount=1, use_native_token=True, order_type="limit")
-    # switcheo_client.execute_order(order_details=order, kp=keypair)
-
-    #### These probably work but since the orders have yet to work these have not been tested yet. ####
-    cancel = switcheo_client.create_cancellation(kp=keypair, order_id=order['id'])
-    switcheo_client.execute_cancellation(kp=keypair, cancellation_details=cancel)
+    switcheo_client.cancel_order(kp=keypair, order_id=order['id'])

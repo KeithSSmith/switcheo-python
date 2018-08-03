@@ -6,65 +6,78 @@
 
 ## Description
 
-An initial release of the Switcheo Python API.  This has not been tested and is lacking in documentation, unit testing, error handling, and standardization.
+Alpha release of the Switcheo Python API.  This has not been tested outside of functionality and is lacking in documentation, unit testing, error handling, and standardization necessary.
 
 The main goal of this package is to avoid using the neo-python package due to the incredibly large dependencies required to build it.  Instead we are attempting to use neo-common-python as well as extending functionality between binary and hex conversions.
 
 Some simple examples can be found in the [test.py](test.py)
 
-**Create and Open Wallet**
+## API Examples
 
-    wallet = UserWallet.Create(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
-    wallet = UserWallet.Open(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
+### Create and Open Wallet
 
-**Extract and Transform Keys**
+```
+wallet = UserWallet.Create(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
+wallet = UserWallet.Open(path='test_switcheo_wallet', password=to_aes_key('switcheo'))
+```
 
-    wif = wallet.GetKeys()[0].Export()
-    prikey = KeyPair.PrivateKeyFromWIF(wif)
-    keypair = KeyPair(priv_key=prikey)
-    prikey_string = private_key_to_hex(keypair)
+### Extract and Transform Keys
 
-    print(neo_get_scripthash_from_private_key(prikey))
-    print(type(neo_get_scripthash_from_private_key(prikey)))
+```
+wif = wallet.GetKeys()[0].Export()
+prikey = KeyPair.PrivateKeyFromWIF(wif)
+keypair = KeyPair(priv_key=prikey)
+prikey_string = private_key_to_hex(keypair)
 
-    print(scripthash_to_address(neo_get_scripthash_from_private_key(prikey).Data))
-    print(type(scripthash_to_address(neo_get_scripthash_from_private_key(prikey).Data)))
+print(neo_get_scripthash_from_private_key(prikey))
+print(type(neo_get_scripthash_from_private_key(prikey)))
 
-    # I don't think this is working correctly
-    print(neo_get_address_from_scripthash(keypair.GetAddress()))
+print(scripthash_to_address(neo_get_scripthash_from_private_keyprikey).Data))
+print(type(scripthash_to_address(neo_get_scripthash_from_privat_key(prikey).Data)))
 
-**Public Client Functions**
+# I don't think this is working correctly
+print(neo_get_address_from_scripthash(keypair.GetAddress()))
+```
 
-    switcheo_pub_client = PublicClient()
-    switcheo_pub_client.get_candlesticks(pair="SWTH_NEO",
-                                         start_time=round(time.time()) - 150000,
-                                         end_time=round(time.time()),
-                                         interval=1)
-    switcheo_pub_client.get_last_24_hours()
-    switcheo_pub_client.get_last_price()
-    switcheo_pub_client.get_offers()
-    switcheo_pub_client.get_trades(limit=3)
-    switcheo_pub_client.get_pairs()
-    switcheo_pub_client.get_pairs(base="SWTH")
+### Public Client Functions
 
-**Authenticated Client Functions**
+```
+switcheo_pub_client = PublicClient()
+print(switcheo_pub_client.get_exchange_status())
+print(switcheo_pub_client.get_exchange_time())
+print(switcheo_pub_client.get_orders(address=neo_get_scripthash_from_private_key(prikey)))
+print(switcheo_pub_client.get_balance(neo_get_scripthash_from_private_key(prikey)))
+print(switcheo_pub_client.get_candlesticks(pair="SWTH_NEO",
+                                           start_time=round(time.time()) - 150000,
+                                           end_time=round(time.time()),
+                                           interval=1))
+print(switcheo_pub_client.get_last_24_hours())
+print(switcheo_pub_client.get_last_price())
+print(switcheo_pub_client.get_offers())
+print(switcheo_pub_client.get_trades(limit=3))
+print(switcheo_pub_client.get_pairs())
+print(switcheo_pub_client.get_pairs(base="SWTH"))
+```
 
-    switcheo_client = AuthenticatedClient(blockchain="neo")
+### Authenticated Client Functions
 
-    # You can only have 1 "active" deposit/withdrawal at a time, if it's still waiting
-    # for the deposit confirmation you will get a 422 error until the previous deposit is complete.
+```
+switcheo_client = AuthenticatedClient(blockchain="neo")
 
-    switcheo_client.deposit(asset=product_dict["SWTH"], amount=1, kp=keypair)
+# You can only have 1 "active" deposit/withdrawal at a time, if it's still waiting
+# for the deposit confirmation you will get a 422 error until the previous deposit is complete.
+print(switcheo_client.deposit(asset=product_dict["SWTH"], amount=1, kp=keypair))
+# switcheo_client.withdrawal(asset=product_dict["SWTH"], amount=0.001, kp=keypair)
 
-    switcheo_client.withdrawal(asset="SWTH", amount=0.001, kp=keypair)
+# Placing a limit buy order on the Switcheo/NEO trade pair
+# Offering to buy 100 SWTH at the price of 0.0002 NEO for a total of 0.02 NEO
+# This also uses the SWTH token to pay for any trade fees incurred on fills
+order = switcheo_client.order(kp=keypair, trade_pair="SWTH_NEO", side="buy", price=0.0002,
+                              amount=100, use_native_token=True, order_type="limit")
 
-    switcheo_client.get_balance(neo_get_scripthash_from_private_key(prikey))
+switcheo_client.cancel_order(kp=keypair, order_id=order['id'])
+```
 
-    #### This is not working as of yet. ####
-    # order = switcheo_client.create_order(kp=keypair, trade_pair="SWTH_NEO", side="buy", price=0.002,
-    #                                      amount=1, use_native_token=True, order_type="limit")
-    # switcheo_client.execute_order(order_details=order, kp=keypair)
+## Donation Address
 
-    #### These probably work but since the orders have yet to work these have not been tested yet. ####
-    cancel = switcheo_client.create_cancellation(kp=keypair, order_id=order['id'])
-    switcheo_client.execute_cancellation(kp=keypair, cancellation_details=cancel)
+NEO - ANwvg4giWPxrZeJtR3ro9TJf4dUHk5wjKe

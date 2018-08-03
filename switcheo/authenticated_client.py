@@ -6,8 +6,8 @@
 
 from switcheo.public_client import PublicClient
 from switcheo.utils import Request, get_epoch_milliseconds
-from switcheo.neo.utils import encode_message, sign_message, to_neo_asset_amount,\
-    neo_get_scripthash_from_private_key, private_key_to_hex, sign_transaction
+from switcheo.neo.utils import sign_message, sign_transaction, sign_array, encode_message,\
+    to_neo_asset_amount, neo_get_scripthash_from_private_key, private_key_to_hex
 
 
 class AuthenticatedClient(PublicClient):
@@ -25,20 +25,9 @@ class AuthenticatedClient(PublicClient):
             'contract_hash': self.contract_hash
         }
 
-    def get_balance(self, address):
-        balance_params = {
-            "addresses": [
-                address
-            ],
-            "contract_hashes": [
-                self.contract_hash
-            ]
-        }
-        return self.request.get(path='/balances', params=balance_params)
-
     def deposit(self, asset, amount, kp):
         deposit_details = self.create_deposit(asset=asset, amount=amount, kp=kp)
-        self.execute_deposit(deposit_details=deposit_details, kp=kp)
+        return self.execute_deposit(deposit_details=deposit_details, kp=kp)
 
     def create_deposit(self, asset, amount, kp):
         self.create_signable_params['asset_id'] = asset
@@ -59,7 +48,7 @@ class AuthenticatedClient(PublicClient):
 
     def withdrawal(self, asset, amount, kp):
         withdrawal_details = self.create_withdrawal(asset=asset, amount=amount, kp=kp)
-        self.execute_withdrawal(withdrawal_details=withdrawal_details, kp=kp)
+        return self.execute_withdrawal(withdrawal_details=withdrawal_details, kp=kp)
 
     def create_withdrawal(self, asset, amount, kp):
         self.create_signable_params['asset_id'] = asset
@@ -83,7 +72,17 @@ class AuthenticatedClient(PublicClient):
                                                private_key_hex=private_key_to_hex(key_pair=kp))
         return self.request.post(path='/withdrawals/{}/broadcast'.format(withdrawal_id), json_data=api_params)
 
+    def order(self, kp, trade_pair, side, price, amount, use_native_token=True, order_type="limit"):
+        create_order = self.create_order(kp=kp, trade_pair=trade_pair, side=side, price=price,
+                                         amount=amount, use_native_token=use_native_token,
+                                         order_type=order_type)
+        return self.execute_order(order_details=create_order, kp=kp)
+
     def create_order(self, kp, trade_pair, side, price, amount, use_native_token=True, order_type="limit"):
+        # Trading minimums
+        # NEO: > 0.01
+        # GAS: > 0.1
+        # Other: > 1
         signable_params = {
             "blockchain": self.blockchain,
             "pair": trade_pair,
@@ -100,23 +99,25 @@ class AuthenticatedClient(PublicClient):
         api_params['address'] = neo_get_scripthash_from_private_key(private_key=kp.PrivateKey).ToString()
         api_params['signature'] = sign_message(encoded_message=encoded_message,
                                                private_key_hex=private_key_to_hex(key_pair=kp))
-        print(api_params)
         return self.request.post(path='/orders', json_data=api_params)
 
-    ########  This function is not ready  ########
     def execute_order(self, order_details, kp):
         order_id = order_details['id']
-        signable_params = {
-            'id': withdrawal_id,
-            'timestamp': get_epoch_milliseconds()
+        signed_params = {
+            'signatures': {
+                'fills': sign_array(messages=order_details['fills'],
+                                    private_key_hex=private_key_to_hex(key_pair=kp)),
+                'makes': sign_array(messages=order_details['makes'],
+                                    private_key_hex=private_key_to_hex(key_pair=kp))
+            }
         }
-        encoded_message = encode_message(signable_params)
-        api_params = signable_params
-        api_params['signature'] = sign_message(encoded_message=encoded_message,
-                                               private_key_hex=private_key_to_hex(key_pair=kp))
-        return self.request.post(path='/orders/:id/broadcast'.format(withdrawal_id), json_data=api_params)
+        return self.request.post(path='/orders/{}/broadcast'.format(order_id), json_data=signed_params)
 
-    def create_cancellation(self, kp, order_id):
+    def cancel_order(self, kp, order_id):
+        create_cancellation = self.create_cancellation(order_id=order_id, kp=kp)
+        return self.execute_cancellation(cancellation_details=create_cancellation, kp=kp)
+
+    def create_cancellation(self, order_id, kp):
         signable_params = {
             "order_id": order_id,
             "timestamp": get_epoch_milliseconds()

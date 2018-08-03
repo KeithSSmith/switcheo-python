@@ -59,3 +59,9 @@ target/
 
 # PyCharm
 .idea
+
+# NEO Wallets
+test_switcheo_wallet*
+
+# Docker Test Environments
+Dockerfile*
