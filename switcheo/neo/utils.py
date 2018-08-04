@@ -63,3 +63,8 @@ def neo_get_public_key_from_private_key(private_key):
 def neo_get_scripthash_from_private_key(private_key):
     script = b'21' + neo_get_public_key_from_private_key(private_key).encode_point(True) + b'ac'
     return Crypto.ToScriptHash(data=script)
+
+
+def open_wallet(private_key):
+    pk = bytes.fromhex(private_key)
+    return KeyPair(priv_key=pk)

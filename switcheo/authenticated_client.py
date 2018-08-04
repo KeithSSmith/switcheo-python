@@ -72,20 +72,20 @@ class AuthenticatedClient(PublicClient):
                                                private_key_hex=private_key_to_hex(key_pair=kp))
         return self.request.post(path='/withdrawals/{}/broadcast'.format(withdrawal_id), json_data=api_params)
 
-    def order(self, kp, trade_pair, side, price, amount, use_native_token=True, order_type="limit"):
-        create_order = self.create_order(kp=kp, trade_pair=trade_pair, side=side, price=price,
+    def order(self, kp, pair, side, price, amount, use_native_token=True, order_type="limit"):
+        create_order = self.create_order(kp=kp, pair=pair, side=side, price=price,
                                          amount=amount, use_native_token=use_native_token,
                                          order_type=order_type)
         return self.execute_order(order_details=create_order, kp=kp)
 
-    def create_order(self, kp, trade_pair, side, price, amount, use_native_token=True, order_type="limit"):
+    def create_order(self, kp, pair, side, price, amount, use_native_token=True, order_type="limit"):
         # Trading minimums
         # NEO: > 0.01
         # GAS: > 0.1
         # Other: > 1
         signable_params = {
             "blockchain": self.blockchain,
-            "pair": trade_pair,
+            "pair": pair,
             "side": side,
             "price": '{:.8f}'.format(price),
             "want_amount": to_neo_asset_amount(amount),

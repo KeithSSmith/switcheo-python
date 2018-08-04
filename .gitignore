@@ -53,6 +53,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+docs/html
 
 # PyBuilder
 target/
@@ -65,3 +66,6 @@ test_switcheo_wallet*
 
 # Docker Test Environments
 Dockerfile*
+
+# Python Virtual Environments
+venv/
