@@ -16,7 +16,7 @@ reqs = [str(ir.req) for ir in install_reqs]
 #     'pytest',
 #     ]
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setup(
@@ -25,7 +25,7 @@ setup(
     version='0.1.1',
     author='Keith Smith',
     author_email='keith.scotts@gmail.com',
-    license='Apache Software License',
+    license='MIT License',
     url='https://github.com/KeithSSmith/switcheo-python',
     packages=find_packages(),
     include_package_data=True,
@@ -33,7 +33,6 @@ setup(
     # tests_require=tests_require,
     description='Python client for the Switcheo DEX API',
     long_description=long_description,
-    long_description_content_type="text/markdown",
     keywords=['switcheo', 'switcheo-api', 'trade', 'bitcoin', 'ethereum', 'neo', 'BTC', 'ETH', 'NEO',
               'QTUM', 'client', 'api', 'wrapper', 'exchange', 'dex', 'crypto', 'currency', 'trading', 'trading-api'],
     classifiers=[

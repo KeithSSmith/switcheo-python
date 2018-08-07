@@ -22,7 +22,7 @@ Switcheo Python API
 
     <p align="center">
       <a href="https://img.shields.io/pypi/v/switcheo.svg">
-         <img src="https://pypi.python.org/pypi/switcheo">
+         <img src="https://img.shields.io/pypi/v/switcheo.svg">
       </a>
       <a href="https://travis-ci.org/KeithSSmith/switcheo-python">
         <img src="https://travis-ci.org/KeithSSmith/switcheo-python.svg?branch=master">
@@ -34,7 +34,7 @@ Switcheo Python API
         <img src='https://coveralls.io/repos/github/KeithSSmith/switcheo-python/badge.svg?branch=master' alt='Coverage Status' />
       </a>
       <a href="https://img.shields.io/pypi/l/switcheo.svg">
-         <img src="https://pypi.python.org/pypi/switcheo">
+         <img src="https://img.shields.io/pypi/l/switcheo.svg">
       </a>
     </p>
 
