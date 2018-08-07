@@ -65,7 +65,10 @@ target/
 test_switcheo_wallet*
 
 # Docker Test Environments
-Dockerfile*
+# Dockerfile*
 
 # Python Virtual Environments
 venv/
+
+# Testing File
+test.py*

@@ -15,13 +15,17 @@ class PublicClient(object):
     the available options on the exchange, including system health, time, trade offers, etc.
     """
 
-    def __init__(self, blockchain="neo"):
+    def __init__(self, blockchain="neo", api_url='https://test-api.switcheo.network/', api_version='/v2'):
         """
 
         :param blockchain: Choose which blockchain to trade on.  Allowed value are neo (future eth and qtum)
         :type blockchain: str
+        :param api_url: The URL for the Switcheo API endpoint.
+        :type api_url: str
+        :param api_version: Choose the version of the Switcho API to use.
+        :type api_version: str
         """
-        self.request = Request(api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30)
+        self.request = Request(api_url=api_url, api_version=api_version, timeout=30)
         self.blockchain = blockchain
 
     def get_exchange_status(self):
