@@ -22,7 +22,7 @@ with open("README.rst", "r") as fh:
 setup(
     name='switcheo',
     python_requires='>=3.6',
-    version='0.1.1',
+    version='0.1.2',
     author='Keith Smith',
     author_email='keith.scotts@gmail.com',
     license='MIT License',
@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     install_requires=reqs,
     # tests_require=tests_require,
-    description='Python client for the Switcheo DEX API',
+    description='Python Client to interact with the Switcheo Exchange API',
     long_description=long_description,
     keywords=['switcheo', 'switcheo-api', 'trade', 'bitcoin', 'ethereum', 'neo', 'BTC', 'ETH', 'NEO',
               'QTUM', 'client', 'api', 'wrapper', 'exchange', 'dex', 'crypto', 'currency', 'trading', 'trading-api'],
