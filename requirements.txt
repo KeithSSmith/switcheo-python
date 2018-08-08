@@ -1,4 +1,2 @@
 neocore==0.4.11
-python-coveralls==2.9.1
 requests==2.19.1
-sphinx==1.7.6

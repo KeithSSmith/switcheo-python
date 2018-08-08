@@ -30,5 +30,5 @@ RUN apt-get update && apt-get install -y \
 RUN rm -rf /var/lib/apt/lists/*
 
 # Update Python environment based on required packages
-COPY ../requirements.txt /
+COPY requirements.txt /
 RUN python -m pip install -r /requirements.txt
