@@ -85,7 +85,6 @@ Python Installation
 """""""""""""""""""
 Since this project requires Python 3.5 or greater this can be installed via the recommended methods found at https://www.python.org/downloads/
 
-
 ``virtualenv`` Dependency Management
 """"""""""""""""""""""""""""""""""""
 
@@ -96,6 +95,11 @@ Docker Image
 
 This project also comes with a simple Docker file that can be used to execute the contents of this package inside of.  This package was developed inside of the Docker container so if there are any issues during use please report them.
 
+Install with ``pip``
+^^^^^^^^^^^^^^^^^^^^
+::
+
+    python -m pip install switcheo
 
 Install from PyPi
 ^^^^^^^^^^^^^^^^^

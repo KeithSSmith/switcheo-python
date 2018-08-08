@@ -37,21 +37,24 @@ def encode_message(message):
 
 
 def to_neo_asset_amount(amount):
-    return "{:.0f}".format(amount * math.pow(10, 8))
+    if 0.00000001 < amount < 1000000:
+        return "{:.0f}".format(amount * math.pow(10, 8))
+    else:
+        raise ValueError('Asset amount {} outside of acceptable range {}-{}.'.format(amount, 0.00000001, 1000000))
 
 
 def private_key_to_hex(key_pair):
     return bytes(key_pair.PrivateKey).hex()
 
 
-def neo_get_address_from_scripthash(address):
+def neo_get_address_from_scripthash(scripthash):
     """
     Core methods for manipulating keys
     NEP2 <=> WIF <=> Private => Public => ScriptHash <=> Address
     Keys are arranged in order of derivation.
     Arrows determine the direction.
     """
-    hex58_substring = base58.b58decode(v=address).hex()[2:42]
+    hex58_substring = base58.b58decode(v=scripthash).hex()[2:42]
     return reverse_hex(hex58_substring)
 
 

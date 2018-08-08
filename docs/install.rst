@@ -26,6 +26,11 @@ Docker Image
 
 This project also comes with a simple Docker file that can be used to execute the contents of this package inside of.  This package was developed inside of the Docker container so if there are any issues during use please report them.
 
+Install with ``pip``
+^^^^^^^^^^^^^^^^^^^^
+::
+
+    python -m pip install switcheo
 
 Install from PyPi
 ^^^^^^^^^^^^^^^^^

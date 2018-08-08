@@ -72,3 +72,7 @@ venv/
 
 # Testing File
 test.py*
+
+# PyTest Cache
+
+.pytest_cache/

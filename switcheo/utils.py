@@ -34,6 +34,10 @@ def num2hexstring(number, size=1, little_endian=False):
     :param {boolean} little_endian - Encode the hex in little endian form
     :return {string}
     """
+    # if (type(number) != = 'number') throw new Error('num must be numeric')
+    # if (num < 0) throw new RangeError('num is unsigned (>= 0)')
+    # if (size % 1 !== 0) throw new Error('size must be a whole integer')
+    # if (!Number.isSafeInteger(num)) throw new RangeError(`num (${num}) must be a safe integer`)
     size = size * 2
     hexstring = hex(number)[2:]
     if len(hexstring) % size != 0:
@@ -57,13 +61,13 @@ def num2varint(num):
         return num2hexstring(num)
     elif num <= 0xffff:
         # uint16
-        return 'fd' + num2hexstring(number=num, size=4, little_endian=True)
+        return 'fd' + num2hexstring(number=num, size=2, little_endian=True)
     elif num <= 0xffffffff:
         # uint32
-        return 'fe' + num2hexstring(number=num, size=8, little_endian=True)
+        return 'fe' + num2hexstring(number=num, size=4, little_endian=True)
     else:
         # uint64
-        return 'ff' + num2hexstring(number=num, size=16, little_endian=True)
+        return 'ff' + num2hexstring(number=num, size=8, little_endian=True)
 
 
 class Request(object):
