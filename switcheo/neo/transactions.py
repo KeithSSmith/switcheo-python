@@ -63,20 +63,28 @@ def serialize_witness(witness):
     return invocation_len + witness['invocationScript'] + verification_len + witness['verificationScript']
 
 
+# Switcheo does not allow for GAS claims so this function should not be used.
 def serialize_claim_exclusive(transaction):
-    print("serialize claim exclusive")
-    # pass
+    if transaction['type'] != 0x02:
+        raise ValueError(
+            'The transaction type {} does not match the claim exclusive method.'.format(transaction['type']))
+    out = num2varint(len(transaction['claims']))
+    for claim in transaction['claims']:
+        out += serialize_transaction_input(claim)
+    return out
 
 
 def serialize_contract_exclusive(transaction):
-    if hex(transaction['type']) != 0x80:
-        exit(4)
+    if transaction['type'] != 0x80:
+        raise ValueError(
+            'The transaction type {} does not match the contract exclusive method.'.format(transaction['type']))
     return ''
 
 
 def serialize_invocation_exclusive(transaction):
     if transaction['type'] != 0xd1:
-        exit(4)
+        raise ValueError(
+            'The transaction type {} does not match the invocation exclusive method.'.format(transaction['type']))
     out = num2varint(int(len(transaction['script'])/2))
     out += transaction['script']
     if transaction['version'] >= 1:

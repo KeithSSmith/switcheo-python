@@ -4,11 +4,8 @@ Switcheo Python API
 
 Python Client for interacting with the Switcheo API.
 
-.. image:: https://img.shields.io/pypi/v/switcheo.svg
-    :target: https://img.shields.io/pypi/v/switcheo.svg
-    :alt: PyPi
 .. image:: https://readthedocs.org/projects/switcheo-python/badge/?version=latest
-    :target: https://switcheo-python.readthedocs.io/en/latest/?badge=latest
+    :target: https://switcheo-python.readthedocs.io/en/latest
     :alt: ReadTheDocs
 .. image:: https://travis-ci.org/KeithSSmith/switcheo-python.svg?branch=master
     :target: https://travis-ci.org/KeithSSmith/switcheo-python
@@ -16,6 +13,12 @@ Python Client for interacting with the Switcheo API.
 .. image:: https://coveralls.io/repos/github/KeithSSmith/switcheo-python/badge.svg?branch=master
     :target: https://coveralls.io/github/KeithSSmith/switcheo-python?branch=master
     :alt: Coveralls
+.. image:: https://img.shields.io/pypi/v/switcheo.svg
+    :target: https://pypi.org/project/switcheo
+    :alt: PyPi
+.. image:: https://img.shields.io/pypi/pyversions/switcheo.svg
+    :target: https://pypi.org/project/switcheo
+    :alt: PyPi
 .. image:: https://img.shields.io/pypi/l/switcheo.svg
     :target: https://img.shields.io/pypi/l/switcheo.svg
     :alt: PyPi
