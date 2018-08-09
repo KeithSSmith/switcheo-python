@@ -28,8 +28,7 @@ transaction_dict = {'hash': '72b74c96b9174e9b9e1b216f7e8f21a6475e6541876a62614df
                     'outputs': [{'assetId': '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7', 'scriptHash': 'e707714512577b42f9a011f8b870625429f93573', 'value': 1e-08}],
                     'scripts': [],
                     'script': '0800e1f505000000001432e125258b7db0a0dffde5bd03b2b859253538ab14592c8a46a0d06c600f06c994d1f25e7283b8a2fe53c1076465706f73697467823b63e7c70a795a7615a38d1ba67d9e54c195a1',
-                    'gas': 0
-                   }
+                    'gas': 0}
 
 transaction_array = [{
                         'id': 'e30a7fdf-779c-4623-8f92-8a961450d843',

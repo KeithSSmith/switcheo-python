@@ -389,7 +389,7 @@ class PublicClient(object):
         }
         return self.request.get(path='/orders', params=order_params)
 
-    def get_balance(self, address):
+    def get_balance(self, addresses, contracts):
         """
         Function to fetch the current account balance for the given address in the Switcheo smart contract (i.e. deposited to the trading contract balance).
         Execution of this function is as follows::
@@ -408,16 +408,14 @@ class PublicClient(object):
                 'locked': {}
             }
 
-        :param address: The ScriptHash of the address to retrieve its Smart Contract balance.
-        :type address: str
-        :return: Dictionary containing the smart contract account balance by state of deposit.
+        :param addresses: The ScriptHash of the address(es) to retrieve its Smart Contract balance.
+        :type addresses: list
+        :param contracts: The contract hash(es) to retrieve all addresses Smart Contract balance.
+        :type contracts: list
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
         """
         balance_params = {
-            "addresses": [
-                address
-            ],
-            "contract_hashes": [
-                self.get_contracts()["NEO"]["V2"]
-            ]
+            "addresses": addresses,
+            "contract_hashes": contracts
         }
         return self.request.get(path='/balances', params=balance_params)
