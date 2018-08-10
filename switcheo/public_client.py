@@ -108,7 +108,8 @@ class PublicClient(object):
             "pair": pair,
             "interval": interval,
             "start_time": start_time,
-            "end_time": end_time
+            "end_time": end_time,
+            "contract_hash": self.get_contracts()['NEO']['V2']
         }
         return self.request.get(path='/tickers/candlesticks', params=candle_params)
 
@@ -316,7 +317,7 @@ class PublicClient(object):
         """
         return self.request.get(path='/contracts')
 
-    def get_orders(self, address):
+    def get_orders(self, address, pair=None):
         """
         Function to fetch the order history of the given address.
         Execution of this function is as follows::
@@ -381,12 +382,16 @@ class PublicClient(object):
 
         :param address: The ScriptHash of the address to filter orders for.
         :type address: str
-        :return: List of dictionaries containing the orders for the given NEO address.
+        :param pair: The trading pair to filter order requests on.
+        :type pair: str
+        :return: List of dictionaries containing the orders for the given NEO address and (optional) trading pair.
         """
         order_params = {
             "address": address,
             "contract_hash": self.get_contracts()["NEO"]["V2"]
         }
+        if pair is not None:
+            order_params['pair'] = pair
         return self.request.get(path='/orders', params=order_params)
 
     def get_balance(self, addresses, contracts):
@@ -415,7 +420,7 @@ class PublicClient(object):
         :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
         """
         balance_params = {
-            "addresses": addresses,
-            "contract_hashes": contracts
+            "addresses[]": addresses,
+            "contract_hashes[]": contracts
         }
         return self.request.get(path='/balances', params=balance_params)

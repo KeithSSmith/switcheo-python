@@ -5,7 +5,7 @@ Instantiate Class
 """""""""""""""""
 ::
 
-    switcheo_pub_client = PublicClient(blockchain=neo)
+    switcheo_pub_client = PublicClient(blockchain="neo")
 
 Exchange API Status
 """""""""""""""""""
