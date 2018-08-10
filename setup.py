@@ -22,7 +22,7 @@ with open("README.rst", "r") as fh:
 setup(
     name='switcheo',
     python_requires='>=3.6',
-    version='0.1.3',
+    version='0.1.4',
     author='Keith Smith',
     author_email='keith.scotts@gmail.com',
     license='MIT License',

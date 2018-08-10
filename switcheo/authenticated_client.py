@@ -27,7 +27,7 @@ class AuthenticatedClient(PublicClient):
         This function is a wrapper function around the create and execute deposit functions to help make this processes simpler for the end user by combining these requests in 1 step.
         Execution of this function is as follows::
 
-            deposit(asset=product_dict["SWTH"], amount=1.1, kp=kp))
+            deposit(asset="SWTH", amount=1.1, kp=kp)
 
         The expected return result for this function is the same as the execute_deposit function::
 
@@ -51,7 +51,7 @@ class AuthenticatedClient(PublicClient):
         Function to create a deposit request by generating a transaction request from the Switcheo API.
         Execution of this function is as follows::
 
-            create_deposit(asset=product_dict["SWTH"], amount=1.1, kp=kp)
+            create_deposit(asset="SWTH", amount=1.1, kp=kp)
 
         The expected return result for this function is as follows::
 
@@ -151,7 +151,7 @@ class AuthenticatedClient(PublicClient):
         This function is a wrapper function around the create and execute withdrawal functions to help make this processes simpler for the end user by combining these requests in 1 step.
         Execution of this function is as follows::
 
-            withdrawal(asset=product_dict["SWTH"], amount=1.1, kp=kp))
+            withdrawal(asset="SWTH", amount=1.1, kp=kp))
 
         The expected return result for this function is the same as the execute_withdrawal function::
 
@@ -186,7 +186,7 @@ class AuthenticatedClient(PublicClient):
         Function to create a withdrawal request by generating a withdrawl ID request from the Switcheo API.
         Execution of this function is as follows::
 
-            create_withdrawal(asset=product_dict["SWTH"], amount=1.1, kp=kp)
+            create_withdrawal(asset="SWTH", amount=1.1, kp=kp)
 
         The expected return result for this function is as follows::
 
@@ -263,7 +263,8 @@ class AuthenticatedClient(PublicClient):
         Execution of this function is as follows::
 
             order(kp=kp, pair="SWTH_NEO", side="buy",
-                  price=0.0002, amount=100, use_native_token=True, order_type="limit")
+                  price=0.0002, amount=100,
+                  use_native_token=True, order_type="limit")
 
         The expected return result for this function is the same as the execute_order function::
 
@@ -579,7 +580,6 @@ class AuthenticatedClient(PublicClient):
         :return:  Dictionary of the transaction details and state after sending the signed transaction to the blockchain.
         """
         create_cancellation = self.create_cancellation(order_id=order_id, kp=kp)
-        print(create_cancellation)
         return self.execute_cancellation(cancellation_details=create_cancellation, kp=kp)
 
     def create_cancellation(self, order_id, kp):
