@@ -19,3 +19,5 @@ class TestFixed8(unittest.TestCase):
     def test_num2fixed8(self):
         self.assertEqual(num2fixed8(205), '002de5c504000000')
         self.assertEqual(num2fixed8(0.0205), 'd0471f0000000000')
+        with self.assertRaises(ValueError):
+            num2fixed8(205, size=1.1)
