@@ -186,13 +186,13 @@ List Orders for Address (ScriptHash)
 """"""""""""""""""""""""""""""""""""
 ::
 
-    switcheo_pub_client.get_orders(address=neo_get_scripthash_from_private_key(prikey))
+    switcheo_pub_client.get_orders(address=neo_get_scripthash_from_address(address))
 
 List Contract Balance for Address (ScriptHash)
 """"""""""""""""""""""""""""""""""""""""""""""
 ::
 
-    switcheo_pub_client.get_balance(address=neo_get_scripthash_from_private_key(prikey))
+    switcheo_pub_client.get_balance(address=neo_get_scripthash_from_address(address))
 
 Tickers
 """""""

@@ -1,7 +1,6 @@
 import unittest
 import time
 from switcheo.public_client import PublicClient
-from switcheo.utils import get_epoch_milliseconds
 
 
 pc = PublicClient(blockchain='neo')
@@ -83,6 +82,7 @@ class TestPublicClient(unittest.TestCase):
         self.assertTrue(set(trades_list).issubset(set(trades_key_list)))
         with self.assertRaises(ValueError):
             pc.get_trades(pair="SWTH_NEO", limit=0)
+        with self.assertRaises(ValueError):
             pc.get_trades(pair="SWTH_NEO", limit=1000000)
 
     def test_get_pairs(self):

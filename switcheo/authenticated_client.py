@@ -7,7 +7,7 @@ Usage:
 """
 
 from switcheo.public_client import PublicClient
-from switcheo.utils import Request, get_epoch_milliseconds
+from switcheo.utils import get_epoch_milliseconds
 from switcheo.neo.utils import sign_message, sign_transaction, sign_array, encode_message,\
     to_neo_asset_amount, neo_get_scripthash_from_private_key, private_key_to_hex
 
@@ -17,8 +17,6 @@ class AuthenticatedClient(PublicClient):
     def __init__(self, blockchain="neo", contract_version='V2',
                  api_url='https://test-api.switcheo.network/', api_version='/v2'):
         PublicClient.__init__(self, blockchain=blockchain, api_url=api_url, api_version=api_version)
-        self.request = Request(api_url=api_url, api_version=api_version, timeout=30)
-        self.blockchain = blockchain
         self.contract_version = contract_version
         self.contract_hash = self.get_contracts()['NEO'][self.contract_version]
 
@@ -441,7 +439,9 @@ class AuthenticatedClient(PublicClient):
         # GAS: > 0.1
         # Other: > 1
         if side.lower() not in ["buy", "sell"]:
-            exit("Allowed trade types are buy or sell, you entered {}".format(side.lower()))
+            raise ValueError("Allowed trade types are buy or sell, you entered {}".format(side.lower()))
+        if order_type.lower() not in ["limit"]:
+            raise ValueError("Allowed order type is limit, you entered {}".format(order_type.lower()))
         signable_params = {
             "blockchain": self.blockchain,
             "pair": pair,

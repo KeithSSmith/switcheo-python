@@ -64,3 +64,15 @@ class TestAuthenticatedClient(unittest.TestCase):
                     trade['makes'][0]['status'] in ['cancelled', 'cancelling']:
                 cancelled = True
         self.assertTrue(cancelled)
+
+    def test_order_filter(self):
+        # Test side filter
+        with self.assertRaises(ValueError):
+            ac.order(kp=kp, pair="SWTH_NEO", side="test",
+                     price=0.0001, amount=100,
+                     use_native_token=True, order_type="limit")
+        # Test order_type filter
+        with self.assertRaises(ValueError):
+            ac.order(kp=kp, pair="SWTH_NEO", side="buy",
+                     price=0.0001, amount=100,
+                     use_native_token=True, order_type="test")
