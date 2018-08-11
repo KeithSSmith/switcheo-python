@@ -1,6 +1,7 @@
 import unittest
 import time
 from switcheo.public_client import PublicClient
+from switcheo.utils import get_epoch_milliseconds
 
 
 pc = PublicClient(blockchain='neo')
@@ -74,9 +75,15 @@ class TestPublicClient(unittest.TestCase):
 
     def test_get_trades(self):
         trades_key_list = ['id', 'fill_amount', 'take_amount', 'event_time', 'is_buy']
-        trades_list = pc.get_trades(pair="SWTH_NEO", limit=1)
+        trades_list = pc.get_trades(pair="SWTH_NEO",
+                                    limit=1,
+                                    start_time=int(round(time.time())) - 2419200,
+                                    end_time=int(round(time.time())))
         trades_list = trades_list[0].keys()
         self.assertTrue(set(trades_list).issubset(set(trades_key_list)))
+        with self.assertRaises(ValueError):
+            pc.get_trades(pair="SWTH_NEO", limit=0)
+            pc.get_trades(pair="SWTH_NEO", limit=1000000)
 
     def test_get_pairs(self):
         all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO', 'DBC_NEO',
