@@ -9,6 +9,7 @@ import binascii
 import base58
 from neocore.Cryptography.Crypto import Crypto
 from neocore.KeyPair import KeyPair
+from neocore.Cryptography.Helper import scripthash_to_address
 from switcheo.utils import stringify_message, reverse_hex
 from switcheo.neo.transactions import serialize_transaction
 
@@ -47,6 +48,18 @@ def private_key_to_hex(key_pair):
     return bytes(key_pair.PrivateKey).hex()
 
 
+def neo_get_scripthash_from_address(address):
+    """
+    Convert a Public Address String to a ScriptHash (Address) String.
+
+    :param address: The Public address to convert.
+    :type address: str
+    :return: String containing the converted ScriptHash.
+    """
+    hash_bytes = binascii.hexlify(base58.b58decode_check(address))
+    return reverse_hex(hash_bytes[2:].decode('utf-8'))
+
+
 def neo_get_address_from_scripthash(scripthash):
     """
     Core methods for manipulating keys
@@ -54,8 +67,8 @@ def neo_get_address_from_scripthash(scripthash):
     Keys are arranged in order of derivation.
     Arrows determine the direction.
     """
-    hex58_substring = base58.b58decode(v=scripthash).hex()[2:42]
-    return reverse_hex(hex58_substring)
+    scripthash_bytes = binascii.unhexlify(reverse_hex(scripthash))
+    return scripthash_to_address(scripthash_bytes)
 
 
 def neo_get_public_key_from_private_key(private_key):

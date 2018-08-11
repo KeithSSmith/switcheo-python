@@ -1,7 +1,7 @@
 import unittest
 from switcheo.neo.utils import encode_message, to_neo_asset_amount, private_key_to_hex, open_wallet,\
-    neo_get_address_from_scripthash, neo_get_scripthash_from_private_key, neo_get_public_key_from_private_key,\
-    sign_message, sign_transaction, sign_array
+    neo_get_scripthash_from_address, neo_get_address_from_scripthash, neo_get_scripthash_from_private_key,\
+    neo_get_public_key_from_private_key, sign_message, sign_transaction, sign_array
 from neocore.KeyPair import KeyPair
 
 
@@ -183,8 +183,11 @@ class TestNeoUtils(unittest.TestCase):
     def test_private_key_to_hex(self):
         self.assertEqual(private_key_to_hex(key_pair=kp), testnet_privatekey_hexstring)
 
-    # def test_neo_get_address_from_scripthash(self):
-    #     self.assertEqual(str(neo_get_address_from_scripthash(scripthash=testnet_scripthash_uint160)), testnet_address)
+    def test_neo_get_scripthash_from_address(self):
+        self.assertEqual(neo_get_scripthash_from_address(address=testnet_address), testnet_scripthash)
+
+    def test_neo_get_address_from_scripthash(self):
+        self.assertEqual(neo_get_address_from_scripthash(scripthash=testnet_scripthash), testnet_address)
 
     def test_neo_get_public_key_from_private_key(self):
         self.assertEqual(neo_get_public_key_from_private_key(private_key=testnet_privatekey).ToString(), testnet_publickey)

@@ -6,7 +6,7 @@
 
 
 from switcheo.utils import reverse_hex, num2hexstring, num2varint
-from switcheo.Fixed8 import Fixed8, num2fixed8
+from switcheo.Fixed8 import SwitcheoFixed8, num2fixed8
 
 
 max_transaction_attribute_size = 65535
@@ -35,7 +35,7 @@ def serialize_transaction(transaction, signed=True):
 
 def serialize_transaction_attribute(attr):
     if len(attr['data']) > max_transaction_attribute_size:
-        exit()
+        raise ValueError('Transaction attribute data is larger than the Maximum allowed attribute size.')
     out = num2hexstring(attr['usage'])
     if attr['usage'] == 0x81:
         out += num2hexstring(len(attr['data']) / 2)
@@ -53,7 +53,7 @@ def serialize_transaction_input(txn_input):
 
 
 def serialize_transaction_output(txn_output):
-    value = Fixed8(float(txn_output['value'])).toReverseHex()
+    value = SwitcheoFixed8(float(txn_output['value'])).toReverseHex()
     return reverse_hex(txn_output['assetId']) + value + reverse_hex(txn_output['scriptHash'])
 
 

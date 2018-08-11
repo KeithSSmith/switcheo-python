@@ -241,7 +241,7 @@ class PublicClient(object):
         :return: List of dictionaries consisting of the filled orders that meet the requirements of the parameters passed to it.
         """
         if limit > 10000 or limit < 1:
-            exit()
+            raise ValueError("Attempting to request more trades than allowed by the API.")
         trades_params = {
             "blockchain": self.blockchain,
             "pair": pair,
@@ -322,7 +322,7 @@ class PublicClient(object):
         Function to fetch the order history of the given address.
         Execution of this function is as follows::
 
-            get_orders(address=neo_get_scripthash_from_private_key(private_key=prikey))
+            get_orders(address=neo_get_scripthash_from_address(address=address))
 
         The expected return result for this function is as follows::
 
@@ -399,7 +399,7 @@ class PublicClient(object):
         Function to fetch the current account balance for the given address in the Switcheo smart contract (i.e. deposited to the trading contract balance).
         Execution of this function is as follows::
 
-            get_balance(address=neo_get_scripthash_from_private_key(private_key=prikey))
+            get_balance(address=neo_get_scripthash_from_address(address=address))
 
         The expected return result for this function is as follows::
 
