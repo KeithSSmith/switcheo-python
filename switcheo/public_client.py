@@ -62,6 +62,35 @@ class PublicClient(object):
         """
         return self.request.get(path='/exchange/timestamp')
 
+    def get_token_details(self):
+        """
+        Function to fetch the avaible tokens available to trade on the Switcheo exchange.
+        Execution of this function is as follows::
+
+            get_token_details()
+
+        The expected return result for this function is as follows::
+
+            {
+                'NEO': {
+                    'hash': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+                    'decimals': 8
+                },
+                'GAS': {
+                    'hash': '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+                    'decimals': 8
+                },
+                'SWTH': {
+                    'hash': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
+                    'decimals': 8
+                },
+                ...
+            }
+
+        :return: Dictionary in the form of a JSON message with the available tokens for trade on the Switcheo exchange.
+        """
+        return self.request.get(path='/exchange/tokens')
+
     def get_candlesticks(self, pair, start_time, end_time, interval):
         """
         Function to fetch trading metrics from the past 24 hours for all trading pairs offered on the exchange.
