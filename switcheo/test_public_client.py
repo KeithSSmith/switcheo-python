@@ -16,6 +16,14 @@ class TestPublicClient(unittest.TestCase):
         exchange_time_dict = {'timestamp': 1533362081336}
         self.assertGreater(pc.get_exchange_time()['timestamp'], exchange_time_dict['timestamp'])
 
+    def test_get_token_details(self):
+        exchange_token_list = ['NEO', 'GAS', 'SWTH', 'ACAT', 'APH', 'AVA', 'COUP', 'CPX', 'DBC', 'EFX', 'GALA',
+                               'LRN', 'LX', 'MCT', 'NKN', 'NRVE', 'OBT', 'ONT', 'PHX', 'PKC', 'QLC', 'RHT',
+                               'RPX', 'SDS', 'SDT', 'SOUL', 'TKY', 'TNC', 'TOLL', 'ZPT', 'SWH', 'BOLTC', 'MCTP',
+                               'NRVEP', 'RHTC', 'ETH', 'ONC']
+        exchange_token_request = pc.get_token_details()
+        self.assertTrue(set(exchange_token_request.keys()).issuperset(set(exchange_token_list)))
+
     def test_get_candlesticks(self):
         candles_key_list = ['time', 'open', 'close', 'high', 'low', 'volume', 'quote_volume']
         candles_request = pc.get_candlesticks(pair="SWTH_NEO",

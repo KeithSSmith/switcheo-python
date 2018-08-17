@@ -23,6 +23,14 @@ Python Client for interacting with the Switcheo API.
     :target: https://img.shields.io/pypi/l/switcheo.svg
     :alt: PyPi
 
+Table of Contents
+-----------------
+
+- `Overview`_
+- `Installation`_
+- `Public Client`_
+- `Authenticated  Client`_
+- `Donations`_
 
 Overview
 --------
@@ -250,5 +258,10 @@ Cancel an Open Order
 ::
 
     switcheo_client.cancel_order(order_id=order['id'], kp=kp)
+
+Donations
+---------
+
+Accepted at Neo address **ANwvg4giWPxrZeJtR3ro9TJf4dUHk5wjKe**.
 
 .. _MIT: https://github.com/KeithSSmith/switcheo-python/blob/master/LICENSE.md
