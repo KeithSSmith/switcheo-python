@@ -17,10 +17,7 @@ class TestPublicClient(unittest.TestCase):
         self.assertGreater(pc.get_exchange_time()['timestamp'], exchange_time_dict['timestamp'])
 
     def test_get_token_details(self):
-        exchange_token_list = ['NEO', 'GAS', 'SWTH', 'ACAT', 'APH', 'AVA', 'COUP', 'CPX', 'DBC', 'EFX', 'GALA',
-                               'LRN', 'LX', 'MCT', 'NKN', 'NRVE', 'OBT', 'ONT', 'PHX', 'PKC', 'QLC', 'RHT',
-                               'RPX', 'SDS', 'SDT', 'SOUL', 'TKY', 'TNC', 'TOLL', 'ZPT', 'SWH', 'BOLTC', 'MCTP',
-                               'NRVEP', 'RHTC', 'ETH', 'ONC']
+        exchange_token_list = ['NEO', 'GAS', 'SWTH', 'ETH']
         exchange_token_request = pc.get_token_details()
         self.assertTrue(set(exchange_token_request.keys()).issuperset(set(exchange_token_list)))
 
@@ -62,7 +59,8 @@ class TestPublicClient(unittest.TestCase):
             'want_asset': 'NEO',
             'available_amount': 9509259,
             'offer_amount': 9509259,
-            'want_amount': 9509259}]
+            'want_amount': 9509259,
+            'address': '7f345d1a031c4099540dbbbc220d4e5640ab2b6f'}]
         offers_set_list = set(offers_list[0].keys())
         offered_list = pc.get_offers()
         self.assertTrue(set(offered_list[0].keys()).issubset(offers_set_list))
@@ -119,7 +117,7 @@ class TestPublicClient(unittest.TestCase):
                 'V1_5': 'c41d8b0c30252ce7e8b6d95e9ce13fdd68d2a5a8',
                 'V2': 'a195c1549e7da61b8da315765a790ac7e7633b82'},
             'ETH': {
-                'V1': '0x0000000000000000000000000000000000000000'}}
+                'V1': '0xa3f9592a90ecd9b3dfa17068f9eb34a46d4ae335'}}
         self.assertDictEqual(pc.get_contracts(), contracts_dict)
 
     def test_get_orders(self):

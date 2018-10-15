@@ -214,7 +214,8 @@ class PublicClient(object):
                 'want_asset': 'NEO',
                 'available_amount': 9509259,
                 'offer_amount': 30000000,
-                'want_amount': 300000000
+                'want_amount': 300000000,
+                'address': '7f345d1a031c4099540dbbbc220d4e5640ab2b6f'
             }, {
                 ....
             }]
