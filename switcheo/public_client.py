@@ -64,7 +64,7 @@ class PublicClient(object):
 
     def get_token_details(self):
         """
-        Function to fetch the avaible tokens available to trade on the Switcheo exchange.
+        Function to fetch the available tokens available to trade on the Switcheo exchange.
         Execution of this function is as follows::
 
             get_token_details()
@@ -214,7 +214,8 @@ class PublicClient(object):
                 'want_asset': 'NEO',
                 'available_amount': 9509259,
                 'offer_amount': 30000000,
-                'want_amount': 300000000
+                'want_amount': 300000000,
+                'address': '7f345d1a031c4099540dbbbc220d4e5640ab2b6f'
             }, {
                 ....
             }]
@@ -346,7 +347,8 @@ class PublicClient(object):
         """
         return self.request.get(path='/contracts')
 
-    def get_orders(self, address, pair=None):
+    def get_orders(self, address, chain_name='NEO', contract_version='V2', pair=None, from_epoch_time=None,
+                   order_status=None, before_id=None, limit=50):
         """
         Function to fetch the order history of the given address.
         Execution of this function is as follows::
@@ -413,14 +415,33 @@ class PublicClient(object):
         :type address: str
         :param pair: The trading pair to filter order requests on.
         :type pair: str
+        :param chain_name: The name of the chain to find orders against.
+        :type chain_name: str
+        :param contract_version: The version of the contract to find orders against.
+        :type contract_version: str
+        :param from_epoch_time: Only return orders that are last updated at or after this time.
+        :type from_epoch_time: int
+        :param order_status: Only return orders have this status. Possible values are open, cancelled, completed.
+        :type order_status: str
+        :param before_id: Only return orders that are created before the order with this id.
+        :type before_id: str
+        :param limit: Only return up to this number of orders (min: 1, max: 200, default: 50).
+        :type limit: int
         :return: List of dictionaries containing the orders for the given NEO address and (optional) trading pair.
         """
         order_params = {
             "address": address,
-            "contract_hash": self.get_contracts()["NEO"]["V2"]
+            "contract_hash": self.get_contracts()[chain_name][contract_version],
+            "limit": limit
         }
         if pair is not None:
             order_params['pair'] = pair
+        if from_epoch_time is not None:
+            order_params['from_epoch_time'] = from_epoch_time
+        if order_status is not None:
+            order_params['order_status'] = order_status
+        if before_id is not None:
+            order_params['before_id'] = before_id
         return self.request.get(path='/orders', params=order_params)
 
     def get_balance(self, addresses, contracts):

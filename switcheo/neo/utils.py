@@ -10,7 +10,7 @@ import base58
 from neocore.Cryptography.Crypto import Crypto
 from neocore.KeyPair import KeyPair
 from neocore.Cryptography.Helper import scripthash_to_address
-from switcheo.utils import stringify_message, reverse_hex
+from switcheo.utils import num2hexstring, stringify_message, reverse_hex
 from switcheo.neo.transactions import serialize_transaction
 
 
@@ -84,3 +84,16 @@ def neo_get_scripthash_from_private_key(private_key):
 def open_wallet(private_key):
     pk = bytes.fromhex(private_key)
     return KeyPair(priv_key=pk)
+
+
+def create_offer_hash(neo_address, offer_asset_hash, offer_asset_amt, want_asset_hash, want_asset_amt, txn_uuid):
+    reverse_user_hash = reverse_hex(neo_get_scripthash_from_address(neo_address))
+    reverse_offer_asset_hash = reverse_hex(offer_asset_hash)
+    reverse_offer_amount = num2hexstring(number=offer_asset_amt, size=8, little_endian=True)
+    reverse_want_asset_hash = reverse_hex(want_asset_hash)
+    reverse_want_amount = num2hexstring(number=want_asset_amt, size=8, little_endian=True)
+    nonce_hex = txn_uuid.encode('utf-8').hex()
+    offer_key_bytes = reverse_user_hash + reverse_offer_asset_hash + reverse_want_asset_hash + reverse_offer_amount +\
+                      reverse_want_amount + nonce_hex
+    offer_hash = reverse_hex(Crypto.Hash256(binascii.a2b_hex(offer_key_bytes)).hex())
+    return offer_hash

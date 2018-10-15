@@ -12,17 +12,13 @@ except ImportError:  # pip version < 10.0
 install_reqs = parse_requirements('requirements.txt', session=PipSession())
 reqs = [str(ir.req) for ir in install_reqs]
 
-# tests_require = [
-#     'pytest',
-#     ]
-
 with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setup(
     name='switcheo',
     python_requires='>=3.6',
-    version='0.2.2',
+    version='0.2.3',
     author='Keith Smith',
     author_email='keith.scotts@gmail.com',
     license='MIT License',
@@ -30,7 +26,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=reqs,
-    # tests_require=tests_require,
     description='Python Client to interact with the Switcheo Exchange API',
     long_description=long_description,
     keywords=['switcheo', 'switcheo-api', 'trade', 'bitcoin', 'ethereum', 'neo', 'BTC', 'ETH', 'NEO',

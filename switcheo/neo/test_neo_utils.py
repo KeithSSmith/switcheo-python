@@ -1,5 +1,5 @@
 import unittest
-from switcheo.neo.utils import encode_message, to_neo_asset_amount, private_key_to_hex, open_wallet,\
+from switcheo.neo.utils import create_offer_hash, encode_message, to_neo_asset_amount, private_key_to_hex, open_wallet,\
     neo_get_scripthash_from_address, neo_get_address_from_scripthash, neo_get_scripthash_from_private_key,\
     neo_get_public_key_from_private_key, sign_message, sign_transaction, sign_array
 from neocore.KeyPair import KeyPair
@@ -199,3 +199,12 @@ class TestNeoUtils(unittest.TestCase):
         self.assertEqual(open_wallet(testnet_privatekey_hexstring).PublicKey, kp.PublicKey)
         self.assertEqual(open_wallet(testnet_privatekey_hexstring).PrivateKey, kp.PrivateKey)
         self.assertEqual(open_wallet(testnet_privatekey_hexstring).GetAddress(), kp.GetAddress())
+
+    def test_create_offer_hash(self):
+        self.assertEqual(create_offer_hash(neo_address='APuP9GsSCPJKrexPe49afDV8CQYubZGWd8',
+                                           offer_asset_amt=6000000,
+                                           offer_asset_hash='c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+                                           want_asset_amt=30000000000,
+                                           want_asset_hash='ab38352559b8b203bde5fddfa0b07d8b2525e132',
+                                           txn_uuid='ecb6ee9e-de8d-46d6-953b-afcc976be1ae'),
+                         '95a9502f11c62b85cf790b83104c89d3198a3b4dac6ba8a0e19090a8ee2207c7')

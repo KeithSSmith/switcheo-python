@@ -76,3 +76,7 @@ test.py*
 # PyTest Cache
 
 .pytest_cache/
+
+transaction\.json
+
+test\.cs

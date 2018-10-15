@@ -27,6 +27,7 @@ class TestSwitcheoClient(unittest.TestCase):
             'deposit_txn': None,
             'created_at': '2018-08-08T18:39:13.864Z',
             'status': 'processed',
+            'order_status': 'cancelled',
             'fills': [],
             'makes': []
             }]
@@ -37,7 +38,7 @@ class TestSwitcheoClient(unittest.TestCase):
     def test_current_contract_hash(self):
         expected_current_contract_dict = {
             'NEO': 'a195c1549e7da61b8da315765a790ac7e7633b82',
-            'ETH': '0x0000000000000000000000000000000000000000'}
+            'ETH': '0xa3f9592a90ecd9b3dfa17068f9eb34a46d4ae335'}
         self.assertDictEqual(sc.current_contract_hash(), expected_current_contract_dict)
 
     def test_balance_current_contract(self):
