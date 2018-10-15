@@ -27,6 +27,7 @@ class TestSwitcheoClient(unittest.TestCase):
             'deposit_txn': None,
             'created_at': '2018-08-08T18:39:13.864Z',
             'status': 'processed',
+            'order_status': 'cancelled',
             'fills': [],
             'makes': []
             }]
