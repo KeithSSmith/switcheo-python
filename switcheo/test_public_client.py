@@ -92,21 +92,18 @@ class TestPublicClient(unittest.TestCase):
             pc.get_trades(pair="SWTH_NEO", limit=1000000)
 
     def test_get_pairs(self):
-        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO', 'DBC_NEO',
-                     'EFX_NEO', 'GALA_NEO', 'LRN_NEO', 'MCT_NEO', 'NKN_NEO', 'NRVE_NEO', 'OBT_NEO', 'ONT_NEO',
-                     'PKC_NEO', 'QLC_NEO', 'RHT_NEO', 'RPX_NEO', 'SDS_NEO', 'SDT_NEO', 'SOUL_NEO', 'TKY_NEO', 'TNC_NEO',
-                     'TOLL_NEO', 'ZPT_NEO', 'MCTP_NEO', 'NRVEP_NEO', 'RHTC_NEO', 'SWTH_GAS', 'ACAT_GAS', 'APH_GAS',
-                     'AVA_GAS', 'COUP_GAS', 'CPX_GAS', 'DBC_GAS', 'EFX_GAS', 'GALA_GAS', 'LRN_GAS', 'MCT_GAS',
-                     'NKN_GAS', 'NRVE_GAS', 'OBT_GAS', 'ONT_GAS', 'PKC_GAS', 'QLC_GAS', 'RHT_GAS', 'RPX_GAS', 'SDS_GAS',
-                     'SDT_GAS', 'SOUL_GAS', 'TKY_GAS', 'TNC_GAS', 'TOLL_GAS', 'ZPT_GAS', 'MCTP_GAS', 'NRVEP_GAS',
-                     'RHTC_GAS', 'ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'DBC_SWTH', 'EFX_SWTH',
-                     'GALA_SWTH', 'LRN_SWTH', 'MCT_SWTH', 'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'ONT_SWTH', 'PKC_SWTH',
-                     'QLC_SWTH', 'RHT_SWTH', 'RPX_SWTH', 'SDS_SWTH', 'SDT_SWTH', 'SOUL_SWTH', 'TKY_SWTH', 'TNC_SWTH',
-                     'TOLL_SWTH', 'ZPT_SWTH', 'MCTP_SWTH', 'NRVEP_SWTH', 'RHTC_SWTH']
-        switcheo_pairs = ['ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'DBC_SWTH', 'EFX_SWTH',
-                          'GALA_SWTH', 'LRN_SWTH', 'MCT_SWTH', 'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'ONT_SWTH',
-                          'PKC_SWTH', 'QLC_SWTH', 'RHT_SWTH', 'RPX_SWTH', 'SDS_SWTH', 'SDT_SWTH', 'SOUL_SWTH',
-                          'TKY_SWTH', 'TNC_SWTH', 'TOLL_SWTH', 'ZPT_SWTH', 'MCTP_SWTH', 'NRVEP_SWTH', 'RHTC_SWTH']
+        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO', 'EFX_NEO',
+                     'LRN_NEO', 'MCT_NEO', 'NKN_NEO', 'NRVE_NEO', 'OBT_NEO', 'PKC_NEO', 'QLC_NEO', 'RHT_NEO',
+                     'SDS_NEO', 'SOUL_NEO', 'TKY_NEO', 'TNC_NEO', 'TOLL_NEO', 'ZPT_NEO',
+                     'SWTH_GAS', 'ACAT_GAS', 'APH_GAS', 'AVA_GAS', 'COUP_GAS', 'CPX_GAS', 'EFX_GAS', 'LRN_GAS',
+                     'MCT_GAS', 'NKN_GAS', 'NRVE_GAS', 'OBT_GAS', 'PKC_GAS', 'QLC_GAS', 'RHT_GAS', 'SDS_GAS',
+                     'SOUL_GAS', 'TKY_GAS', 'TNC_GAS', 'TOLL_GAS', 'ZPT_GAS',
+                     'ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'EFX_SWTH', 'LRN_SWTH', 'MCT_SWTH',
+                     'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'PKC_SWTH', 'QLC_SWTH', 'RHT_SWTH', 'SDS_SWTH', 'SOUL_SWTH',
+                     'TKY_SWTH', 'TNC_SWTH', 'TOLL_SWTH', 'ZPT_SWTH']
+        switcheo_pairs = ['ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'EFX_SWTH', 'LRN_SWTH',
+                          'MCT_SWTH', 'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'PKC_SWTH', 'QLC_SWTH', 'RHT_SWTH',
+                          'SDS_SWTH', 'SOUL_SWTH', 'TKY_SWTH', 'TNC_SWTH', 'TOLL_SWTH', 'ZPT_SWTH']
         self.assertTrue(set(pc.get_pairs()).issuperset(set(all_pairs)))
         self.assertTrue(set(pc.get_pairs(base="SWTH")).issuperset(set(switcheo_pairs)))
 
