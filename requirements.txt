@@ -1,2 +1,2 @@
-neocore==0.4.11
-requests==2.19.1
+neocore==0.5.3
+requests>=2.20.0
