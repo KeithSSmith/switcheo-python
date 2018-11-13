@@ -17,6 +17,8 @@ class TestSwitcheoClient(unittest.TestCase):
             'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
             'pair': 'SWTH_NEO',
             'side': 'buy',
+            'price': '0.00001',
+            'quantity': '1000000000000',
             'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
             'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
             'offer_amount': '6000000',
