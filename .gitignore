@@ -80,3 +80,7 @@ test.py*
 transaction\.json
 
 test\.cs
+
+test_eth\.py
+
+test_neo\.py

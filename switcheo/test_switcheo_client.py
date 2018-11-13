@@ -15,7 +15,10 @@ class TestSwitcheoClient(unittest.TestCase):
             'blockchain': 'neo',
             'contract_hash': 'a195c1549e7da61b8da315765a790ac7e7633b82',
             'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
+            'pair': 'SWTH_NEO',
             'side': 'buy',
+            'price': '0.00001',
+            'quantity': '1000000000000',
             'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
             'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
             'offer_amount': '6000000',
@@ -29,6 +32,7 @@ class TestSwitcheoClient(unittest.TestCase):
             'status': 'processed',
             'order_status': 'cancelled',
             'fills': [],
+            'fill_groups': [],
             'makes': []
             }]
         orders_list = orders_list[0].keys()
@@ -38,7 +42,7 @@ class TestSwitcheoClient(unittest.TestCase):
     def test_current_contract_hash(self):
         expected_current_contract_dict = {
             'NEO': 'a195c1549e7da61b8da315765a790ac7e7633b82',
-            'ETH': '0xa3f9592a90ecd9b3dfa17068f9eb34a46d4ae335'}
+            'ETH': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}
         self.assertDictEqual(sc.current_contract_hash(), expected_current_contract_dict)
 
     def test_balance_current_contract(self):

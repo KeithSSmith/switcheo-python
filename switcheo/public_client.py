@@ -15,7 +15,11 @@ class PublicClient(object):
     the available options on the exchange, including system health, time, trade offers, etc.
     """
 
-    def __init__(self, blockchain="neo", api_url='https://test-api.switcheo.network/', api_version='/v2'):
+    def __init__(self,
+                 blockchain="neo",
+                 contract_version='V2',
+                 api_url='https://test-api.switcheo.network/',
+                 api_version='/v2'):
         """
 
         :param blockchain: Choose which blockchain to trade on.  Allowed value are neo (future eth and qtum)
@@ -27,6 +31,9 @@ class PublicClient(object):
         """
         self.request = Request(api_url=api_url, api_version=api_version, timeout=30)
         self.blockchain = blockchain
+        self.blockchain_key = blockchain.upper()
+        self.contract_version = contract_version.upper()
+        self.contract_hash = self.get_contracts()[self.blockchain_key][self.contract_version]
 
     def get_exchange_status(self):
         """
@@ -61,6 +68,24 @@ class PublicClient(object):
         :return: Dictionary in the form of a JSON message with the exchange epoch time in milliseconds.
         """
         return self.request.get(path='/exchange/timestamp')
+
+    def get_exchange_message(self):
+        """
+        Function to fetch the Switcheo Exchange message to ensure pertinent information is handled gracefully.
+        Execution of this function is as follows::
+
+            get_exchange_message()
+
+        The expected return result for this function is as follows::
+
+            {
+                'message': 'Welcome to Switcheo Beta. <a href="https://medium.com/@jackyeu/2edc3908c48a" target="blank">Please read this post</a>.</span></div>',
+                'message_type': 'info'
+            }
+
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        """
+        return self.request.get(path='/exchange/announcement_message')
 
     def get_token_details(self):
         """
@@ -138,7 +163,7 @@ class PublicClient(object):
             "interval": interval,
             "start_time": start_time,
             "end_time": end_time,
-            "contract_hash": self.get_contracts()['NEO']['V2']
+            "contract_hash": self.contract_hash
         }
         return self.request.get(path='/tickers/candlesticks', params=candle_params)
 
@@ -227,7 +252,7 @@ class PublicClient(object):
         offer_params = {
             "blockchain": self.blockchain,
             "pair": pair,
-            "contract_hash": self.get_contracts()["NEO"]["V2"]
+            "contract_hash": self.contract_hash
         }
         return self.request.get(path='/offers', params=offer_params)
 
@@ -275,7 +300,7 @@ class PublicClient(object):
         trades_params = {
             "blockchain": self.blockchain,
             "pair": pair,
-            "contract_hash": self.get_contracts()["NEO"]["V2"]
+            "contract_hash": self.contract_hash
         }
         if start_time is not None:
             trades_params['from'] = start_time
@@ -431,7 +456,7 @@ class PublicClient(object):
         """
         order_params = {
             "address": address,
-            "contract_hash": self.get_contracts()[chain_name][contract_version],
+            "contract_hash": self.get_contracts()[chain_name.upper()][contract_version.upper()],
             "limit": limit
         }
         if pair is not None:

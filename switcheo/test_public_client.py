@@ -43,7 +43,9 @@ class TestPublicClient(unittest.TestCase):
             'SWTH': ['GAS', 'NEO'],
             'GAS': ['NEO'],
             'NEO': ['SWTH'],
-            'RHTC': ['NEO']
+            'RHTC': ['NEO'],
+            'JRC': ['ETH'],
+            'SWC': ['ETH']
         }
         last_price_request = pc.get_last_price()
         for pair in last_price_request:
@@ -114,7 +116,7 @@ class TestPublicClient(unittest.TestCase):
                 'V1_5': 'c41d8b0c30252ce7e8b6d95e9ce13fdd68d2a5a8',
                 'V2': 'a195c1549e7da61b8da315765a790ac7e7633b82'},
             'ETH': {
-                'V1': '0xa3f9592a90ecd9b3dfa17068f9eb34a46d4ae335'}}
+                'V1': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}}
         self.assertDictEqual(pc.get_contracts(), contracts_dict)
 
     def test_get_orders(self):
@@ -123,7 +125,10 @@ class TestPublicClient(unittest.TestCase):
             'blockchain': 'neo',
             'contract_hash': 'a195c1549e7da61b8da315765a790ac7e7633b82',
             'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
+            'pair': 'SWTH_NEO',
             'side': 'buy',
+            'price': '0.000001',
+            'quantity': '1000000',
             'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
             'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
             'offer_amount': '6000000',
@@ -137,8 +142,9 @@ class TestPublicClient(unittest.TestCase):
             'status': 'processed',
             'order_status': 'processed',
             'fills': [],
+            'fill_groups': [],
             'makes': []
-            }]
+        }]
         switcheo_orders_list = orders_list.copy()
         orders_list = orders_list[0].keys()
         testnet_scripthash = 'fea2b883725ef2d194c9060f606cd0a0468a2c59'
