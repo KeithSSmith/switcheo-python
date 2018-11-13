@@ -61,6 +61,15 @@ transaction_array = [{
                                 {
                                     'usage': 32,
                                     'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 129,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 144,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 2,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
                                 }
                             ],
                             'inputs': [
@@ -164,7 +173,7 @@ class TestNeoUtils(unittest.TestCase):
                          signed_transaction)
 
     def test_sign_array(self):
-        signed_array = {'e30a7fdf-779c-4623-8f92-8a961450d843': 'b1b821d7aa3c3d388370eba8e910de5c3605fcae2d584b0e89e932658f6b335a6aac65c52928e6eebf85919464897b8966a5a4dbcfd92eb28a3ae88299533f2c', '7dac087c-3709-48ea-83e1-83eadfc4cbe5': 'b1b821d7aa3c3d388370eba8e910de5c3605fcae2d584b0e89e932658f6b335a6aac65c52928e6eebf85919464897b8966a5a4dbcfd92eb28a3ae88299533f2c'}
+        signed_array = {'7dac087c-3709-48ea-83e1-83eadfc4cbe5': 'b1b821d7aa3c3d388370eba8e910de5c3605fcae2d584b0e89e932658f6b335a6aac65c52928e6eebf85919464897b8966a5a4dbcfd92eb28a3ae88299533f2c', 'e30a7fdf-779c-4623-8f92-8a961450d843': '0d2a9565124b7d1d709cbd6a1b039296f50921572780490621cbaa0d1055a6027cbce4307030179d332cb1adc59599d766dfdac094a74a13a1bc10a5b84c93ed'}
         self.assertEqual(sign_array(messages=transaction_array, private_key_hex=testnet_privatekey_hexstring),
                          signed_array)
 
