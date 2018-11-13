@@ -61,6 +61,15 @@ transaction_array = [{
                                 {
                                     'usage': 32,
                                     'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 129,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 144,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
+                                }, {
+                                    'usage': 2,
+                                    'data': '592c8a46a0d06c600f06c994d1f25e7283b8a2fe'
                                 }
                             ],
                             'inputs': [

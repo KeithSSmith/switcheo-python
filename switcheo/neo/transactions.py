@@ -38,9 +38,9 @@ def serialize_transaction_attribute(attr):
         raise ValueError('Transaction attribute data is larger than the Maximum allowed attribute size.')
     out = num2hexstring(attr['usage'])
     if attr['usage'] == 0x81:
-        out += num2hexstring(len(attr['data']) / 2)
+        out += num2hexstring(len(attr['data']) // 2)
     elif attr['usage'] == 0x90 or attr['usage'] >= 0xf0:
-        out += num2varint(len(attr['data']) / 2)
+        out += num2varint(len(attr['data']) // 2)
     if attr['usage'] == 0x02 or attr['usage'] == 0x03:
         out += attr['data'][2:64]
     else:
@@ -58,8 +58,8 @@ def serialize_transaction_output(txn_output):
 
 
 def serialize_witness(witness):
-    invocation_len = num2varint(len(witness['invocationScript']) / 2)
-    verification_len = num2varint(len(witness['verificationScript']) / 2)
+    invocation_len = num2varint(len(witness['invocationScript']) // 2)
+    verification_len = num2varint(len(witness['verificationScript']) // 2)
     return invocation_len + witness['invocationScript'] + verification_len + witness['verificationScript']
 
 
