@@ -1,2 +1,3 @@
-neocore==0.5.3
+neocore==0.5.4
 requests>=2.20.0
+web3==4.8.1

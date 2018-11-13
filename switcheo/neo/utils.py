@@ -23,7 +23,7 @@ def sign_transaction(transaction, private_key_hex):
     return sign_message(encoded_message=serialized_transaction, private_key_hex=private_key_hex)
 
 
-def sign_array(messages, private_key_hex):
+def sign_txn_array(messages, private_key_hex):
     message_dict = {}
     for message in messages:
         message_dict[message['id']] = sign_transaction(transaction=message['txn'],
@@ -37,9 +37,9 @@ def encode_message(message):
     return '010001f0' + message_hex_length + message_hex + '0000'
 
 
-def to_neo_asset_amount(amount):
+def to_neo_asset_amount(amount, power=8):
     if 0.00000001 < amount < 1000000:
-        return "{:.0f}".format(amount * math.pow(10, 8))
+        return "{:.0f}".format(amount * math.pow(10, power))
     else:
         raise ValueError('Asset amount {} outside of acceptable range {}-{}.'.format(amount, 0.00000001, 1000000))
 

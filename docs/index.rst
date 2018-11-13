@@ -47,5 +47,6 @@ Allowing developers and end user to focus on **Trading**!
     install
     usage
     clients
+    signatures
 
 .. _MIT: https://github.com/KeithSSmith/switcheo-python/blob/master/LICENSE.md

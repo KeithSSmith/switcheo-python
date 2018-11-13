@@ -1,7 +1,7 @@
 import unittest
 from switcheo.neo.utils import create_offer_hash, encode_message, to_neo_asset_amount, private_key_to_hex, open_wallet,\
     neo_get_scripthash_from_address, neo_get_address_from_scripthash, neo_get_scripthash_from_private_key,\
-    neo_get_public_key_from_private_key, sign_message, sign_transaction, sign_array
+    neo_get_public_key_from_private_key, sign_message, sign_transaction, sign_txn_array
 from neocore.KeyPair import KeyPair
 
 
@@ -165,7 +165,7 @@ class TestNeoUtils(unittest.TestCase):
 
     def test_sign_array(self):
         signed_array = {'e30a7fdf-779c-4623-8f92-8a961450d843': 'b1b821d7aa3c3d388370eba8e910de5c3605fcae2d584b0e89e932658f6b335a6aac65c52928e6eebf85919464897b8966a5a4dbcfd92eb28a3ae88299533f2c', '7dac087c-3709-48ea-83e1-83eadfc4cbe5': 'b1b821d7aa3c3d388370eba8e910de5c3605fcae2d584b0e89e932658f6b335a6aac65c52928e6eebf85919464897b8966a5a4dbcfd92eb28a3ae88299533f2c'}
-        self.assertEqual(sign_array(messages=transaction_array, private_key_hex=testnet_privatekey_hexstring),
+        self.assertEqual(sign_txn_array(messages=transaction_array, private_key_hex=testnet_privatekey_hexstring),
                          signed_array)
 
     def test_encode_message(self):
