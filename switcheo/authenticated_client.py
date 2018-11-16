@@ -38,6 +38,17 @@ class AuthenticatedClient(PublicClient):
                               contract_version=contract_version,
                               api_url=api_url,
                               api_version=api_version)
+        self.infura_dict = {
+            'https://api.switcheo.network': 'https://infura.io/',
+            'https://api.switcheo.network/': 'https://infura.io/',
+            'api.switcheo.network': 'https://infura.io/',
+            'api.switcheo.network/': 'https://infura.io/',
+            'https://test-api.switcheo.network': 'https://ropsten.infura.io/',
+            'https://test-api.switcheo.network/': 'https://ropsten.infura.io/',
+            'test-api.switcheo.network': 'https://ropsten.infura.io/',
+            'test-api.switcheo.network/': 'https://ropsten.infura.io/'
+        }
+        self.infura_url = self.infura_dict[api_url]
         self.blockchain_amount = {
             'eth': partial(to_wei, unit='ether'),
             'neo': to_neo_asset_amount
@@ -55,7 +66,7 @@ class AuthenticatedClient(PublicClient):
             'neo': sign_create_deposit_neo
         }
         self.sign_execute_deposit_function = {
-            'eth': sign_execute_deposit_eth,
+            'eth': partial(sign_execute_deposit_eth, infura_url=self.infura_url),
             'neo': sign_execute_deposit_neo
         }
         self.sign_create_order_function = {

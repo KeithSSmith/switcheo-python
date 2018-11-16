@@ -1,12 +1,14 @@
 # -*- coding:utf-8 -*-
 """
 Description:
-    Public Client for the Switcheo decentralized exchange.  It is not required to use your private key or WIF to interact with these endpoints which can be used to track the exchange state.
+    Public Client for the Switcheo decentralized exchange.
+    It is not required to use your private key or WIF to interact with these endpoints which can be used
+    to track the exchange state.
 Usage:
     from switcheo.public_client import PublicClient
 """
 
-from switcheo.utils import Request
+from switcheo.utils import current_contract_hash, Request
 
 
 class PublicClient(object):
@@ -32,8 +34,10 @@ class PublicClient(object):
         self.request = Request(api_url=api_url, api_version=api_version, timeout=30)
         self.blockchain = blockchain
         self.blockchain_key = blockchain.upper()
+        self.contracts = self.get_contracts()
         self.contract_version = contract_version.upper()
-        self.contract_hash = self.get_contracts()[self.blockchain_key][self.contract_version]
+        self.contract_hash = self.contracts[self.blockchain_key][self.contract_version]
+        self.current_contract_hash = current_contract_hash(self.contracts)[self.blockchain_key]
 
     def get_exchange_status(self):
         """
@@ -54,7 +58,7 @@ class PublicClient(object):
 
     def get_exchange_time(self):
         """
-        Function to fetch the time on the exchange in case clocks need to be synchronized or trades need to be aware of server time.
+        Function to fetch the time on the exchange in to synchronized server time.
         Execution of this function is as follows::
 
             get_exchange_time()
@@ -79,7 +83,7 @@ class PublicClient(object):
         The expected return result for this function is as follows::
 
             {
-                'message': 'Welcome to Switcheo Beta. <a href="https://medium.com/@jackyeu/2edc3908c48a" target="blank">Please read this post</a>.</span></div>',
+                'message': 'Welcome to Switcheo Beta.',
                 'message_type': 'info'
             }
 
@@ -250,11 +254,50 @@ class PublicClient(object):
         :return: List of dictionaries consisting of the open offers for the requested trading pair.
         """
         offer_params = {
-            "blockchain": self.blockchain,
             "pair": pair,
             "contract_hash": self.contract_hash
         }
         return self.request.get(path='/offers', params=offer_params)
+
+    def get_offer_book(self, pair="SWTH_NEO"):
+        """
+        Function to fetch the open orders formatted on the order book for the trade pair requested.
+        Execution of this function is as follows::
+
+            get_offer_book(pair="SWTH_NEO")
+
+        The expected return result for this function is as follows::
+
+            {
+                'asks': [{
+                    'price': '0.00068499',
+                    'quantity': '43326.8348443'
+                }, {
+                    'price': '0.000685',
+                    'quantity': '59886.34'
+                }, {
+                    ....
+                }],
+                'bids': [{
+                    'price': '0.00066602',
+                    'quantity': '3255.99999999'
+                }, {
+                    'price': '0.00066601',
+                    'quantity': '887.99999999'
+                }, {
+                    ....
+                }]
+            }
+
+        :param pair: The trading pair that will be used to request open offers on the order book.
+        :type pair: str
+        :return: List of dictionaries consisting of the open offers for the requested trading pair.
+        """
+        offer_params = {
+            "pair": pair,
+            "contract_hash": self.contract_hash
+        }
+        return self.request.get(path='/offers/book', params=offer_params)
 
     def get_trades(self, pair="SWTH_NEO", start_time=None, end_time=None, limit=5000):
         """
@@ -293,7 +336,7 @@ class PublicClient(object):
         :type end_time: int
         :param limit: The number of filled trades to return. Min: 1, Max: 10000, Default: 5000
         :type limit: int
-        :return: List of dictionaries consisting of the filled orders that meet the requirements of the parameters passed to it.
+        :return: List of dictionaries consisting of filled orders that meet requirements of the parameters passed to it.
         """
         if limit > 10000 or limit < 1:
             raise ValueError("Attempting to request more trades than allowed by the API.")
@@ -471,7 +514,7 @@ class PublicClient(object):
 
     def get_balance(self, addresses, contracts):
         """
-        Function to fetch the current account balance for the given address in the Switcheo smart contract (i.e. deposited to the trading contract balance).
+        Function to fetch the current account balance for the given address in the Switcheo smart contract.
         Execution of this function is as follows::
 
             get_balance(address=neo_get_scripthash_from_address(address=address))

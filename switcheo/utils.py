@@ -70,6 +70,18 @@ def num2varint(num):
         return 'ff' + num2hexstring(number=num, size=8, little_endian=True)
 
 
+def current_contract_hash(contracts):
+    contract_dict = {}
+    for chain in contracts:
+        max_key = 1
+        for key in contracts[chain].keys():
+            if float(key[1:].replace('_', '.')) > max_key:
+                max_key = float(key[1:].replace('_', '.'))
+        max_key_str = 'V' + str(max_key).replace('.', '_').replace('_0', '')
+        contract_dict[chain] = contracts[chain][max_key_str]
+    return contract_dict
+
+
 class Request(object):
 
     def __init__(self, api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30):

@@ -13,6 +13,7 @@ from switcheo.ethereum.utils import sign_txn_array
 from eth_utils import to_checksum_address, to_normalized_address
 from eth_account.messages import defunct_hash_message
 from eth_account.account import Account
+from web3 import Web3, HTTPProvider
 
 
 def sign_create_cancellation(cancellation_params, private_key):
@@ -105,7 +106,7 @@ def sign_create_deposit(deposit_params, private_key):
     return create_params
 
 
-def sign_execute_deposit(deposit_params, private_key):
+def sign_execute_deposit(deposit_params, private_key, infura_url):
     """
     Function to execute the deposit request by signing the transaction generated from the create deposit function.
     Execution of this function is as follows::
@@ -122,6 +123,8 @@ def sign_execute_deposit(deposit_params, private_key):
     :type deposit_params: dict
     :param private_key: The Ethereum private key to sign the deposit parameters.
     :type private_key: str
+    :param infura_url: The URL used to broadcast the deposit transaction to the Ethereum network.
+    :type infura_url: str
     :return: Dictionary of the signed transaction to initiate the deposit of ETH via the Switcheo API.
     """
     create_deposit_upper = deposit_params.copy()
@@ -130,6 +133,10 @@ def sign_execute_deposit(deposit_params, private_key):
     create_deposit_upper['transaction'].pop('sha256')
     signed_create_txn = Account.signTransaction(create_deposit_upper['transaction'], private_key=private_key)
     execute_signed_txn = binascii.hexlify(signed_create_txn['hash']).decode()
+
+    # Broadcast transaction to Ethereum Network.
+    Web3(HTTPProvider(infura_url)).eth.sendRawTransaction(signed_create_txn.rawTransaction)
+
     return {'transaction_hash': '0x' + execute_signed_txn}
 
 

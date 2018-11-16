@@ -6,6 +6,7 @@ Usage:
     from switcheo.switcheo_client import SwitcheoClient
 """
 
+from switcheo.utils import current_contract_hash
 from switcheo.authenticated_client import AuthenticatedClient
 from switcheo.neo.utils import neo_get_scripthash_from_address
 
@@ -15,24 +16,12 @@ class SwitcheoClient(AuthenticatedClient):
     def order_history(self, address, pair=None):
         return self.get_orders(neo_get_scripthash_from_address(address=address), pair=pair)
 
-    def current_contract_hash(self):
-        contract_dict = {}
-        contracts = self.get_contracts()
-        for chain in contracts:
-            max_key = 1
-            for key in contracts[chain].keys():
-                if float(key[1:].replace('_', '.')) > max_key:
-                    max_key = float(key[1:].replace('_', '.'))
-            max_key_str = 'V' + str(max_key).replace('.', '_').replace('_0', '')
-            contract_dict[chain] = contracts[chain][max_key_str]
-        return contract_dict
-
     def balance_current_contract(self, *addresses):
         address_list = []
         contract_dict = {}
         for address in addresses:
             address_list.append(neo_get_scripthash_from_address(address=address))
-        current_contract = self.current_contract_hash()
+        current_contract = current_contract_hash(self.contracts)
         for chain in current_contract.keys():
             contract_dict[chain] =\
                 self.get_balance(addresses=address_list, contracts=current_contract[chain])
