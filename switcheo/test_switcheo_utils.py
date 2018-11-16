@@ -1,6 +1,7 @@
 import unittest
 from switcheo.utils import get_epoch_milliseconds, num2hexstring, num2varint, reverse_hex,\
-    stringify_message, Request
+    stringify_message, current_contract_hash, Request
+from switcheo.public_client import PublicClient
 
 
 r = Request(api_url='https://jsonplaceholder.typicode.com/', api_version='')
@@ -36,6 +37,13 @@ class TestSwitcheoUtils(unittest.TestCase):
         json_msg = {"name": "John Smith", "age": 27, "siblings": ["Jane", "Joe"]}
         stringify_msg = '{"age":27,"name":"John Smith","siblings":["Jane","Joe"]}'
         self.assertEqual(stringify_message(json_msg), stringify_msg)
+
+    def test_current_contract_hash(self):
+        pc = PublicClient()
+        expected_current_contract_dict = {
+            'NEO': 'a195c1549e7da61b8da315765a790ac7e7633b82',
+            'ETH': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}
+        self.assertDictEqual(current_contract_hash(pc.contracts), expected_current_contract_dict)
 
     def test_request_get(self):
         json_msg = {

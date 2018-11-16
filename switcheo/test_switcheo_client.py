@@ -39,12 +39,6 @@ class TestSwitcheoClient(unittest.TestCase):
         all_orders = sc.order_history(address=testnet_address1)
         self.assertTrue(set(all_orders[0].keys()).issubset(set(orders_list)))
 
-    def test_current_contract_hash(self):
-        expected_current_contract_dict = {
-            'NEO': 'a195c1549e7da61b8da315765a790ac7e7633b82',
-            'ETH': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}
-        self.assertDictEqual(sc.current_contract_hash(), expected_current_contract_dict)
-
     def test_balance_current_contract(self):
         expected_balance_current_contract_key_set = set(['NEO', 'ETH'])
         expected_balance_current_contract_child_key_set = set(['confirming', 'confirmed', 'locked'])
