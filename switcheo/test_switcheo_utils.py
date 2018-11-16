@@ -43,7 +43,7 @@ class TestSwitcheoUtils(unittest.TestCase):
         expected_current_contract_dict = {
             'NEO': 'a195c1549e7da61b8da315765a790ac7e7633b82',
             'ETH': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}
-        self.assertDictEqual(current_contract_hash(pc.contract_hash), expected_current_contract_dict)
+        self.assertDictEqual(current_contract_hash(pc.contracts), expected_current_contract_dict)
 
     def test_request_get(self):
         json_msg = {
