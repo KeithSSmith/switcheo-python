@@ -353,13 +353,14 @@ class PublicClient(object):
             trades_params['limit'] = limit
         return self.request.get(path='/trades', params=trades_params)
 
-    def get_pairs(self, base=None):
+    def get_pairs(self, base=None, show_details=True):
         """
         Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
         Execution of this function is as follows::
 
-            get_pairs()              # Fetch all pairs
-            get_pairs(base="SWTH")   # Fetch only SWTH base pairs
+            get_pairs()                  # Fetch all pairs
+            get_pairs(base="SWTH")       # Fetch only SWTH base pairs
+            get_pairs(show_details=True) # Fetch all pairs with extended information !Attention return value changes!
 
         The expected return result for this function is as follows::
 
@@ -377,19 +378,33 @@ class PublicClient(object):
                 'NKN_SWTH'
             ]
 
+        Attention! If you use the show_details parameter the server return a list with dictionaries as follows::
+        The expected return result for this function is as follows::
+
+            [
+                {'name': 'GAS_NEO', 'precision': 3},
+                {'name': 'SWTH_NEO', 'precision': 6},
+                {'name': 'ACAT_NEO', 'precision': 8},
+                {'name': 'APH_NEO', 'precision': 5},
+                {'name': 'ASA_NEO', 'precision': 8},
+                ....
+            ]
+
         :param base: The base trade pair to optionally filter available trade pairs.
         :type base: str
+        :param show_details: Extended information for the pairs.
+        :type show_details: bool
         :return: List of trade pairs available for trade on Switcheo.
         """
-        if base is not None and base in ["NEO", "GAS", "SWTH", "USD"]:
-            base_params = {
-                "bases": [
-                    base
-                ]
-            }
-            return self.request.get(path='/pairs', params=base_params)
+        params = {}
+
+        if show_details:
+            params["show_details"] = show_details
+        if base is not None and base in ["NEO", "GAS", "SWTH", "USD", "ETH"]:
+            params["bases"] = [base]
+            return self.request.get(path='/pairs', params=params)
         else:
-            return self.request.get(path='/pairs')
+            return self.request.get(path='/pairs', params=params)
 
     def get_contracts(self):
         """
