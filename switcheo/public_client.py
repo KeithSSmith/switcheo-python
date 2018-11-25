@@ -91,12 +91,15 @@ class PublicClient(object):
         """
         return self.request.get(path='/exchange/announcement_message')
 
-    def get_token_details(self):
+    def get_token_details(self, show_listing_details=False, show_inactive=False):
         """
         Function to fetch the available tokens available to trade on the Switcheo exchange.
         Execution of this function is as follows::
 
             get_token_details()
+            get_token_details(show_listing_details=True)
+            get_token_details(show_inactive=True)
+            get_token_details(show_listing_details=True, show_inactive=True)
 
         The expected return result for this function is as follows::
 
@@ -116,9 +119,17 @@ class PublicClient(object):
                 ...
             }
 
+        :param show_listing_details: Parameter flag to indicate whether or not to show the token listing details.
+        :type show_listing_details: bool
+        :param show_inactive: Flag to return the tokens that are no longer traded on the Switcheo Exchange.
+        :type show_inactive: bool
         :return: Dictionary in the form of a JSON message with the available tokens for trade on the Switcheo exchange.
         """
-        return self.request.get(path='/exchange/tokens')
+        api_params = {
+            "show_listing_details": show_listing_details,
+            "show_inactive": show_inactive
+        }
+        return self.request.get(path='/exchange/tokens', params=api_params)
 
     def get_candlesticks(self, pair, start_time, end_time, interval):
         """
@@ -162,14 +173,14 @@ class PublicClient(object):
         :type interval: int
         :return: List of dictionaries containing the candles statistics based on the parameter filters.
         """
-        candle_params = {
+        api_params = {
             "pair": pair,
             "interval": interval,
             "start_time": start_time,
             "end_time": end_time,
             "contract_hash": self.contract_hash
         }
-        return self.request.get(path='/tickers/candlesticks', params=candle_params)
+        return self.request.get(path='/tickers/candlesticks', params=api_params)
 
     def get_last_24_hours(self):
         """
@@ -204,12 +215,15 @@ class PublicClient(object):
         """
         return self.request.get(path='/tickers/last_24_hours')
 
-    def get_last_price(self):
+    def get_last_price(self, symbols=None, bases=None):
         """
         Function to fetch the most recently executed trade on the order book for each trading pair.
         Execution of this function is as follows::
 
             get_last_price()
+            get_last_price(symbols=['SWTH','GAS'])
+            get_last_price(bases=['NEO'])
+            get_last_price(symbols=['SWTH','GAS'], bases=['NEO'])
 
         The expected return result for this function is as follows::
 
@@ -224,9 +238,18 @@ class PublicClient(object):
                 ....
             }
 
+        :param symbols: The trading symbols to retrieve the last price on the Switcheo Exchange.
+        :type symbols: list
+        :param bases: The base pair to retrieve the last price of symbols on the Switcheo Exchange.
+        :type bases: list
         :return: Dictionary of trade symbols with the most recently executed trade price.
         """
-        return self.request.get(path='/tickers/last_price')
+        api_params = {}
+        if symbols is not None:
+            api_params['symbols'] = symbols
+        if bases is not None:
+            api_params['bases'] = bases
+        return self.request.get(path='/tickers/last_price', params=api_params)
 
     def get_offers(self, pair="SWTH_NEO"):
         """
@@ -253,11 +276,11 @@ class PublicClient(object):
         :type pair: str
         :return: List of dictionaries consisting of the open offers for the requested trading pair.
         """
-        offer_params = {
+        api_params = {
             "pair": pair,
             "contract_hash": self.contract_hash
         }
-        return self.request.get(path='/offers', params=offer_params)
+        return self.request.get(path='/offers', params=api_params)
 
     def get_offer_book(self, pair="SWTH_NEO"):
         """
@@ -293,11 +316,11 @@ class PublicClient(object):
         :type pair: str
         :return: List of dictionaries consisting of the open offers for the requested trading pair.
         """
-        offer_params = {
+        api_params = {
             "pair": pair,
             "contract_hash": self.contract_hash
         }
-        return self.request.get(path='/offers/book', params=offer_params)
+        return self.request.get(path='/offers/book', params=api_params)
 
     def get_trades(self, pair="SWTH_NEO", start_time=None, end_time=None, limit=5000):
         """
@@ -340,26 +363,65 @@ class PublicClient(object):
         """
         if limit > 10000 or limit < 1:
             raise ValueError("Attempting to request more trades than allowed by the API.")
-        trades_params = {
+        api_params = {
             "blockchain": self.blockchain,
             "pair": pair,
             "contract_hash": self.contract_hash
         }
         if start_time is not None:
-            trades_params['from'] = start_time
+            api_params['from'] = start_time
         if end_time is not None:
-            trades_params['to'] = end_time
+            api_params['to'] = end_time
         if limit != 5000:
-            trades_params['limit'] = limit
-        return self.request.get(path='/trades', params=trades_params)
+            api_params['limit'] = limit
+        return self.request.get(path='/trades', params=api_params)
 
-    def get_pairs(self, base=None):
+    def get_recent_trades(self, pair="SWTH_NEO"):
+        """
+        Function to fetch a list of the 20 most recently filled trades for the parameters requested.
+        Execution of this function is as follows::
+
+            get_recent_trades(pair="SWTH_NEO")
+
+        The expected return result for this function is as follows::
+
+            [{
+                'id': '15bb16e2-7a80-4de1-bb59-bcaff877dee0',
+                'fill_amount': 100000000,
+                'take_amount': 100000000,
+                'event_time': '2018-08-04T15:00:12.634Z',
+                'is_buy': True
+            }, {
+                'id': 'b6f9e530-60ff-46ff-9a71-362097a2025e',
+                'fill_amount': 47833882,
+                'take_amount': 97950000000,
+                'event_time': '2018-08-03T02:44:47.706Z',
+                'is_buy': True
+            }, ...., {
+                'id': '7a308ccc-b7f5-46a3-bf6b-752ab076cc9f',
+                'fill_amount': 1001117,
+                'take_amount': 2050000000,
+                'event_time': '2018-08-03T02:32:50.703Z',
+                'is_buy': True
+            }]
+
+        :param pair: The trading pair that will be used to request filled trades.
+        :type pair: str
+        :return: List of 20 dictionaries consisting of filled orders for the trade pair.
+        """
+        api_params = {
+            "pair": pair
+        }
+        return self.request.get(path='/trades/recent', params=api_params)
+
+    def get_pairs(self, base=None, show_details=False):
         """
         Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
         Execution of this function is as follows::
 
-            get_pairs()              # Fetch all pairs
-            get_pairs(base="SWTH")   # Fetch only SWTH base pairs
+            get_pairs()                  # Fetch all pairs
+            get_pairs(base="SWTH")       # Fetch only SWTH base pairs
+            get_pairs(show_details=True) # Fetch all pairs with extended information !Attention return value changes!
 
         The expected return result for this function is as follows::
 
@@ -377,19 +439,29 @@ class PublicClient(object):
                 'NKN_SWTH'
             ]
 
+        If you use the show_details parameter the server return a list with dictionaries as follows::
+        The expected return result for this function is as follows::
+             [
+                {'name': 'GAS_NEO', 'precision': 3},
+                {'name': 'SWTH_NEO', 'precision': 6},
+                {'name': 'ACAT_NEO', 'precision': 8},
+                {'name': 'APH_NEO', 'precision': 5},
+                {'name': 'ASA_NEO', 'precision': 8},
+                ....
+            ]
+
         :param base: The base trade pair to optionally filter available trade pairs.
         :type base: str
+        :param show_details: Extended information for the pairs.
+        :type show_details: bool
         :return: List of trade pairs available for trade on Switcheo.
         """
-        if base is not None and base in ["NEO", "GAS", "SWTH", "USD"]:
-            base_params = {
-                "bases": [
-                    base
-                ]
-            }
-            return self.request.get(path='/pairs', params=base_params)
-        else:
-            return self.request.get(path='/pairs')
+        api_params = {}
+        if show_details:
+            api_params["show_details"] = show_details
+        if base is not None and base in ["NEO", "GAS", "SWTH", "USD", "ETH"]:
+            api_params["bases"] = [base]
+        return self.request.get(path='/exchange/pairs', params=api_params)
 
     def get_contracts(self):
         """
@@ -497,20 +569,20 @@ class PublicClient(object):
         :type limit: int
         :return: List of dictionaries containing the orders for the given NEO address and (optional) trading pair.
         """
-        order_params = {
+        api_params = {
             "address": address,
             "contract_hash": self.get_contracts()[chain_name.upper()][contract_version.upper()],
             "limit": limit
         }
         if pair is not None:
-            order_params['pair'] = pair
+            api_params['pair'] = pair
         if from_epoch_time is not None:
-            order_params['from_epoch_time'] = from_epoch_time
+            api_params['from_epoch_time'] = from_epoch_time
         if order_status is not None:
-            order_params['order_status'] = order_status
+            api_params['order_status'] = order_status
         if before_id is not None:
-            order_params['before_id'] = before_id
-        return self.request.get(path='/orders', params=order_params)
+            api_params['before_id'] = before_id
+        return self.request.get(path='/orders', params=api_params)
 
     def get_balance(self, addresses, contracts):
         """
@@ -537,8 +609,8 @@ class PublicClient(object):
         :type contracts: list
         :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
         """
-        balance_params = {
+        api_params = {
             "addresses[]": addresses,
             "contract_hashes[]": contracts
         }
-        return self.request.get(path='/balances', params=balance_params)
+        return self.request.get(path='/balances', params=api_params)
