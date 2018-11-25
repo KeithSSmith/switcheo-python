@@ -414,7 +414,7 @@ class PublicClient(object):
         }
         return self.request.get(path='/trades/recent', params=api_params)
 
-    def get_pairs(self, base=None, show_details=False):
+    def get_pairs(self, base=None, show_details=True):
         """
         Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
         Execution of this function is as follows::
@@ -438,7 +438,6 @@ class PublicClient(object):
                 'MCT_SWTH',
                 'NKN_SWTH'
             ]
-
         If you use the show_details parameter the server return a list with dictionaries as follows::
         The expected return result for this function is as follows::
              [
