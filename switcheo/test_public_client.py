@@ -50,8 +50,8 @@ class TestPublicClient(unittest.TestCase):
         last_price_request = pc.get_last_price()
         for pair in last_price_request:
             last_price_request[pair] = list(last_price_request[pair].keys())
-        self.assertTrue(last_price_request.keys() == last_price_request.keys())
-        for pair in last_price_request:
+        self.assertTrue(set(last_price_request.keys()).issuperset(set(last_price_dict.keys())))
+        for pair in last_price_dict:
             self.assertTrue(set(last_price_request[pair]).issubset(set(last_price_dict[pair])))
 
     def test_get_offers(self):
