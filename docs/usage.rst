@@ -9,3 +9,5 @@ The primary usage of the ``switcheo-python`` package will be utilizing it in con
    import
    public_client_usage
    authenticated_client_usage
+   ethereum_usage
+   neo_usage

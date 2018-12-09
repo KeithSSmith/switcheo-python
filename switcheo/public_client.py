@@ -438,8 +438,9 @@ class PublicClient(object):
                 'MCT_SWTH',
                 'NKN_SWTH'
             ]
+
         If you use the show_details parameter the server return a list with dictionaries as follows::
-        The expected return result for this function is as follows::
+
              [
                 {'name': 'GAS_NEO', 'precision': 3},
                 {'name': 'SWTH_NEO', 'precision': 6},

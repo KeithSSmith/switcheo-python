@@ -467,8 +467,8 @@ class AuthenticatedClient(PublicClient):
         Function to create an order for the trade pair and details requested.
         Execution of this function is as follows::
 
-            create_order(kp=kp, pair="SWTH_NEO", side="buy",
-                         price=0.0002, amount=100, use_native_token=True, order_type="limit")
+            create_order(pair="SWTH_NEO", side="buy", price=0.0002, amount=100, private_key=kp,
+                         use_native_token=True, order_type="limit")
 
         The expected return result for this function is as follows::
 
@@ -568,6 +568,8 @@ class AuthenticatedClient(PublicClient):
         :type use_native_token: bool
         :param order_type: The type of order being submitted, currently this can only be a limit order.
         :type order_type: str
+        :param otc_address: The address to trade with for Over the Counter exchanges.
+        :type otc_address: str
         :return: Dictionary of order details to specify which parts of the trade will be filled (taker) or open (maker)
         """
         if side.lower() not in ["buy", "sell"]:
@@ -594,7 +596,7 @@ class AuthenticatedClient(PublicClient):
     def execute_order(self, order_params, private_key):
         """
         This function executes the order created before it and signs the transaction to be submitted to the blockchain.
-                Execution of this function is as follows::
+        Execution of this function is as follows::
 
             execute_order(order_params=create_order, private_key=kp)
 
