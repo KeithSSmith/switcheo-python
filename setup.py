@@ -18,7 +18,7 @@ with open("README.rst", "r") as fh:
 setup(
     name='switcheo',
     python_requires='>=3.6',
-    version='0.3.1',
+    version='0.3.2',
     author='Keith Smith',
     author_email='keith.scotts@gmail.com',
     license='MIT License',
