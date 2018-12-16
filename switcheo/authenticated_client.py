@@ -29,7 +29,7 @@ from eth_utils import to_wei
 class AuthenticatedClient(PublicClient):
 
     def __init__(self,
-                 blockchain="neo",
+                 blockchain='neo',
                  contract_version='V2',
                  api_url='https://test-api.switcheo.network/',
                  api_version='/v2'):
@@ -389,14 +389,14 @@ class AuthenticatedClient(PublicClient):
         api_params = self.sign_execute_deposit_function[self.blockchain](deposit_params, private_key)
         return self.request.post(path='/deposits/{}/broadcast'.format(deposit_id), json_data=api_params)
 
-    def order(self, pair, side, price, amount, private_key, use_native_token=True, order_type="limit"):
+    def order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit"):
         """
         This function is a wrapper function around the create and execute order functions to help make this processes
         simpler for the end user by combining these requests in 1 step.
         Execution of this function is as follows::
 
             order(pair="SWTH_NEO", side="buy",
-                  price=0.0002, amount=100, private_key=kp,
+                  price=0.0002, quantity=100, private_key=kp,
                   use_native_token=True, order_type="limit")
 
         The expected return result for this function is the same as the execute_order function::
@@ -446,8 +446,8 @@ class AuthenticatedClient(PublicClient):
         :type side: str
         :param price: The price target for this trade.
         :type price: float
-        :param amount: The amount of the asset being exchanged in the trade.
-        :type amount: float
+        :param quantity: The amount of the asset being exchanged in the trade.
+        :type quantity: float
         :param private_key: The Private Key (ETH) or KeyPair (NEO) for the wallet being used to sign deposit message.
         :type private_key: KeyPair or str
         :param use_native_token: Flag to indicate whether or not to pay fees with the Switcheo native token.
@@ -457,17 +457,17 @@ class AuthenticatedClient(PublicClient):
         :return: Dictionary of the transaction on the order book.
         """
         create_order = self.create_order(private_key=private_key, pair=pair, side=side, price=price,
-                                         amount=amount, use_native_token=use_native_token,
+                                         quantity=quantity, use_native_token=use_native_token,
                                          order_type=order_type)
         return self.execute_order(order_params=create_order, private_key=private_key)
 
-    def create_order(self, pair, side, price, amount, private_key, use_native_token=True, order_type="limit",
+    def create_order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit",
                      otc_address=None):
         """
         Function to create an order for the trade pair and details requested.
         Execution of this function is as follows::
 
-            create_order(pair="SWTH_NEO", side="buy", price=0.0002, amount=100, private_key=kp,
+            create_order(pair="SWTH_NEO", side="buy", price=0.0002, quantity=100, private_key=kp,
                          use_native_token=True, order_type="limit")
 
         The expected return result for this function is as follows::
@@ -560,8 +560,8 @@ class AuthenticatedClient(PublicClient):
         :type side: str
         :param price: The price target for this trade.
         :type price: float
-        :param amount: The amount of the asset being exchanged in the trade.
-        :type amount: float
+        :param quantity: The amount of the asset being exchanged in the trade.
+        :type quantity: float
         :param private_key: The Private Key (ETH) or KeyPair (NEO) for the wallet being used to sign deposit message.
         :type private_key: KeyPair or str
         :param use_native_token: Flag to indicate whether or not to pay fees with the Switcheo native token.
@@ -574,17 +574,16 @@ class AuthenticatedClient(PublicClient):
         """
         if side.lower() not in ["buy", "sell"]:
             raise ValueError("Allowed trade types are buy or sell, you entered {}".format(side.lower()))
-        if order_type.lower() not in ["limit", "otc"]:
+        if order_type.lower() not in ["limit", "market", "otc"]:
             raise ValueError("Allowed order type is limit, you entered {}".format(order_type.lower()))
         if order_type.lower() == "otc" and otc_address is None:
             raise ValueError("OTC Address is required when trade type is otc (over the counter).")
-            # order_params
         order_params = {
             "blockchain": self.blockchain,
             "pair": pair,
             "side": side,
-            "price": '{:.8f}'.format(price),
-            "want_amount": str(self.blockchain_amount[self.blockchain](amount)),
+            "price": '{:.8f}'.format(price) if order_type.lower() != "market" else None,
+            "quantity": str(self.blockchain_amount[self.blockchain](quantity)),
             "use_native_tokens": use_native_token,
             "order_type": order_type,
             "timestamp": get_epoch_milliseconds(),

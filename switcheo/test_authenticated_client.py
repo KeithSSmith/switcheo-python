@@ -56,7 +56,7 @@ class TestAuthenticatedClient(unittest.TestCase):
 
     def test_create_and_cancel_order(self):
         order = ac.order(pair="SWTH_NEO", side="buy",
-                         price=0.00001, amount=10000, private_key=kp,
+                         price=0.00001, quantity=10000, private_key=kp,
                          use_native_token=True, order_type="limit")
         ac.cancel_order(order_id=order['id'], private_key=kp)
         testnet_scripthash = 'fea2b883725ef2d194c9060f606cd0a0468a2c59'
@@ -72,10 +72,10 @@ class TestAuthenticatedClient(unittest.TestCase):
         # Test side filter
         with self.assertRaises(ValueError):
             ac.order(pair="SWTH_NEO", side="test",
-                     price=0.0001, amount=100, private_key=kp,
+                     price=0.0001, quantity=100, private_key=kp,
                      use_native_token=True, order_type="limit")
         # Test order_type filter
         with self.assertRaises(ValueError):
             ac.order(pair="SWTH_NEO", side="buy",
-                     price=0.0001, amount=100, private_key=kp,
+                     price=0.0001, quantity=100, private_key=kp,
                      use_native_token=True, order_type="test")
