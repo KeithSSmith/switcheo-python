@@ -82,6 +82,15 @@ def current_contract_hash(contracts):
     return contract_dict
 
 
+
+class SwitcheoApiException(Exception):
+
+    def __init__(self, error_code, error_message, error):
+        super(SwitcheoApiException, self).__init__(error_message)
+        self.error_code = error_code
+        self.error = error
+        
+
 class Request(object):
 
     def __init__(self, api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30):
@@ -98,7 +107,10 @@ class Request(object):
     def post(self, path, data=None, json_data=None, params=None):
         """Perform POST request"""
         r = requests.post(url=self.url + path, data=data, json=json_data, params=params, timeout=self.timeout)
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError:
+            raise SwitcheoApiException(r.json()['error_code'], r.json()['error_message'], r.json()['error'])
         return r.json()
 
     def status(self):
