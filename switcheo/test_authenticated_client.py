@@ -12,13 +12,17 @@ class TestAuthenticatedClient(unittest.TestCase):
 
     def test_deposit(self):
         deposited_dict = {'result': 'ok'}
-        self.assertDictEqual(ac.deposit(asset="SWTH", amount=0.000001, private_key=kp), deposited_dict)
-        self.assertDictEqual(ac.deposit(asset="GAS", amount=0.000001, private_key=kp), deposited_dict)
+        deposit_dict = ac.deposit(asset="SWTH", amount=0.000001, private_key=kp)
+        deposit_dict.pop('transaction_hash')
+        self.assertDictEqual(deposit_dict, deposited_dict)
+        deposit_dict = ac.deposit(asset="GAS", amount=0.000001, private_key=kp)
+        deposit_dict.pop('transaction_hash')
+        self.assertDictEqual(deposit_dict, deposited_dict)
 
     def test_withdrawal(self):
         swth_withdrawn_dict = {
             'event_type': 'withdrawal',
-            'amount': -100,
+            'amount': '-100',
             'asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
             'blockchain': 'neo',
             'reason_code': 9,
@@ -37,7 +41,7 @@ class TestAuthenticatedClient(unittest.TestCase):
 
         gas_withdrawn_dict = {
             'event_type': 'withdrawal',
-            'amount': -100,
+            'amount': '-100',
             'asset_id': '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
             'blockchain': 'neo',
             'reason_code': 9,
