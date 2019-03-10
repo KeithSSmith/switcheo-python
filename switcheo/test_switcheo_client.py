@@ -40,7 +40,7 @@ class TestSwitcheoClient(unittest.TestCase):
         self.assertTrue(set(all_orders[0].keys()).issubset(set(orders_list)))
 
     def test_balance_current_contract(self):
-        expected_balance_current_contract_key_set = set(['NEO', 'ETH'])
+        expected_balance_current_contract_key_set = set(['NEO', 'ETH', 'QTUM'])
         expected_balance_current_contract_child_key_set = set(['confirming', 'confirmed', 'locked'])
         balance_current_contract = sc.balance_current_contract(testnet_address1)
         balance_current_contract_key_set = set(balance_current_contract.keys())
@@ -53,8 +53,8 @@ class TestSwitcheoClient(unittest.TestCase):
             balance_current_contract_child_key_set.issubset(expected_balance_current_contract_child_key_set))
 
     def test_balance_by_contract(self):
-        expected_balance_by_contract_key_set = set(['NEO', 'ETH'])
-        expected_balance_by_contract_child_key_set = set(['V1', 'V1_5', 'V2'])
+        expected_balance_by_contract_key_set = set(['NEO', 'ETH', 'QTUM'])
+        expected_balance_by_contract_child_key_set = set(['V1', 'V1_5', 'V2', 'V3'])
         expected_balance_by_contract_sub_key_set = set(['confirming', 'confirmed', 'locked'])
         balance_by_contract = sc.balance_by_contract(testnet_address1)
         balance_by_contract_key_set = set(balance_by_contract.keys())

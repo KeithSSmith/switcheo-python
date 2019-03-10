@@ -4,6 +4,7 @@ from switcheo.public_client import PublicClient
 
 
 pc = PublicClient(blockchain='neo')
+pc_eth = PublicClient(blockchain='eth', contract_version='V1')
 
 
 class TestPublicClient(unittest.TestCase):
@@ -42,8 +43,8 @@ class TestPublicClient(unittest.TestCase):
         last_price_dict = {
             'SWTH': ['GAS', 'NEO'],
             'GAS': ['NEO'],
-            'NEO': ['SWTH'],
             'RHTC': ['NEO'],
+            'NRVEP': ['NEO'],
             'JRC': ['ETH'],
             'SWC': ['ETH']
         }
@@ -72,7 +73,7 @@ class TestPublicClient(unittest.TestCase):
                 offered_set_list.add(key)
         self.assertTrue(offered_set_list.issubset(offers_set_list))
 
-        offered_list = pc.get_offers(pair="GAS_NEO")
+        offered_list = pc_eth.get_offers(pair="JRC_ETH")
         self.assertTrue(set(offered_list[0].keys()).issubset(offers_set_list))
         offered_set_list = set()
         for offer in offered_list:
@@ -94,29 +95,30 @@ class TestPublicClient(unittest.TestCase):
             pc.get_trades(pair="SWTH_NEO", limit=1000000)
 
     def test_get_pairs(self):
-        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO', 'EFX_NEO',
-                     'LRN_NEO', 'MCT_NEO', 'NKN_NEO', 'NRVE_NEO', 'OBT_NEO', 'PKC_NEO', 'QLC_NEO', 'RHT_NEO',
-                     'SDS_NEO', 'SOUL_NEO', 'TKY_NEO', 'TNC_NEO', 'TOLL_NEO', 'ZPT_NEO',
-                     'SWTH_GAS', 'ACAT_GAS', 'APH_GAS', 'AVA_GAS', 'COUP_GAS', 'CPX_GAS', 'EFX_GAS', 'LRN_GAS',
-                     'MCT_GAS', 'NKN_GAS', 'NRVE_GAS', 'OBT_GAS', 'PKC_GAS', 'QLC_GAS', 'RHT_GAS', 'SDS_GAS',
-                     'SOUL_GAS', 'TKY_GAS', 'TNC_GAS', 'TOLL_GAS', 'ZPT_GAS',
-                     'ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'EFX_SWTH', 'LRN_SWTH', 'MCT_SWTH',
-                     'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'PKC_SWTH', 'QLC_SWTH', 'RHT_SWTH', 'SDS_SWTH', 'SOUL_SWTH',
-                     'TKY_SWTH', 'TNC_SWTH', 'TOLL_SWTH', 'ZPT_SWTH']
-        switcheo_pairs = ['ACAT_SWTH', 'APH_SWTH', 'AVA_SWTH', 'COUP_SWTH', 'CPX_SWTH', 'EFX_SWTH', 'LRN_SWTH',
-                          'MCT_SWTH', 'NKN_SWTH', 'NRVE_SWTH', 'OBT_SWTH', 'PKC_SWTH', 'QLC_SWTH', 'RHT_SWTH',
-                          'SDS_SWTH', 'SOUL_SWTH', 'TKY_SWTH', 'TNC_SWTH', 'TOLL_SWTH', 'ZPT_SWTH']
+        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO']
+        neo_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'ASA_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO',
+                     'DBC_NEO', 'EFX_NEO', 'FTWX_NEO', 'GALA_NEO', 'GUARD_NEO', 'LRN_NEO', 'LX_NEO', 'MCT_NEO',
+                     'NKNO_NEO', 'NOS_NEO', 'NRVE_NEO', 'OBT_NEO', 'ONT_NEO', 'PHX_NEO', 'PKC_NEO', 'PROQ_NEO',
+                     'QLC_NEO', 'RCPT_NEO', 'RHT_NEO', 'RPX_NEO', 'SDS_NEO', 'SENNO_NEO', 'SOUL_NEO', 'TKY_NEO',
+                     'TMN_NEO', 'TNC_NEO', 'TOLL_NEO', 'ZPT_NEO', 'BOLTC_NEO', 'MCTP_NEO', 'NRVEP_NEO', 'RHTC_NEO']
         self.assertTrue(set(pc.get_pairs()).issuperset(set(all_pairs)))
-        self.assertTrue(set(pc.get_pairs(base="SWTH")).issuperset(set(switcheo_pairs)))
+        self.assertTrue(set(pc.get_pairs(base="NEO")).issuperset(set(neo_pairs)))
 
     def test_get_contracts(self):
         contracts_dict = {
             'NEO': {
                 'V1': '0ec5712e0f7c63e4b0fea31029a28cea5e9d551f',
                 'V1_5': 'c41d8b0c30252ce7e8b6d95e9ce13fdd68d2a5a8',
-                'V2': 'a195c1549e7da61b8da315765a790ac7e7633b82'},
+                'V2': 'a195c1549e7da61b8da315765a790ac7e7633b82',
+                'V3': 'ae8a22a3dd8d976291071867204ff20be50d92e5'
+            },
             'ETH': {
-                'V1': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'}}
+                'V1': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'
+            },
+            'QTUM': {
+                'V1': '0x2b25406b0000c3661e9c88890690fd4b5c7b4234'
+            }
+        }
         self.assertDictEqual(pc.get_contracts(), contracts_dict)
 
     def test_get_orders(self):
@@ -193,11 +195,11 @@ class TestPublicClient(unittest.TestCase):
         self.assertTrue(all_balance_dict_set.issubset(balance_dict_set))
 
         sum_balance_dict = {'confirmed': {
-                                'GAS': str(float(int(float(first_balance_dict['confirmed']['GAS'])) + int(
-                                    float(second_balance_dict['confirmed']['GAS'])))),
-                                'NEO': str(float(int(float(first_balance_dict['confirmed']['NEO'])) + int(
-                                    float(second_balance_dict['confirmed']['NEO'])))),
-                                'SWTH': str(float(int(float(first_balance_dict['confirmed']['SWTH'])) + int(
-                                    float(second_balance_dict['confirmed']['SWTH'])))),
+                                'GAS': str(int(float(first_balance_dict['confirmed']['GAS'])) + int(
+                                    float(second_balance_dict['confirmed']['GAS']))),
+                                'NEO': str(int(float(first_balance_dict['confirmed']['NEO'])) + int(
+                                    float(second_balance_dict['confirmed']['NEO']))),
+                                'SWTH': str(int(float(first_balance_dict['confirmed']['SWTH'])) + int(
+                                    float(second_balance_dict['confirmed']['SWTH']))),
                             }}
         self.assertDictEqual(all_balance_dict['confirmed'], sum_balance_dict['confirmed'])
