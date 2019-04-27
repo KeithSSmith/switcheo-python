@@ -19,7 +19,7 @@ class PublicClient(object):
 
     def __init__(self,
                  blockchain="neo",
-                 contract_version='V2',
+                 contract_version='V3',
                  api_url='https://test-api.switcheo.network/',
                  api_version='/v2'):
         """
@@ -487,7 +487,7 @@ class PublicClient(object):
         """
         return self.request.get(path='/contracts')
 
-    def get_orders(self, address, chain_name='NEO', contract_version='V2', pair=None, from_epoch_time=None,
+    def get_orders(self, address, chain_name='NEO', contract_version='V3', pair=None, from_epoch_time=None,
                    order_status=None, before_id=None, limit=50):
         """
         Function to fetch the order history of the given address.
