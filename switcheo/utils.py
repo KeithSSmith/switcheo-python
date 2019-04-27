@@ -93,7 +93,7 @@ class SwitcheoApiException(Exception):
 
 class Request(object):
 
-    def __init__(self, api_url='https://test-api.switcheo.network/', api_version="/v3", timeout=30):
+    def __init__(self, api_url='https://test-api.switcheo.network/', api_version="/v2", timeout=30):
         self.base_url = api_url.rstrip('/')
         self.url = self.base_url + api_version
         self.timeout = timeout
