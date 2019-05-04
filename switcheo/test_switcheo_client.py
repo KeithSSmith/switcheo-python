@@ -31,6 +31,12 @@ class TestSwitcheoClient(unittest.TestCase):
             'created_at': '2018-08-08T18:39:13.864Z',
             'status': 'processed',
             'order_status': 'cancelled',
+            'txn': None,
+            'offer_asset_blockchain': 'neo',
+            'want_asset_blockchain': 'neo',
+            'broadcast_cutoff_at': '2019-05-04T15:53:04.809Z',
+            'scheduled_cancellation_at': None,
+            'counterpart_swap': None,
             'fills': [],
             'fill_groups': [],
             'makes': []
@@ -40,7 +46,7 @@ class TestSwitcheoClient(unittest.TestCase):
         self.assertTrue(set(all_orders[0].keys()).issubset(set(orders_list)))
 
     def test_balance_current_contract(self):
-        expected_balance_current_contract_key_set = set(['NEO', 'ETH', 'QTUM'])
+        expected_balance_current_contract_key_set = set(['NEO', 'ETH', 'QTUM', 'EOS'])
         expected_balance_current_contract_child_key_set = set(['confirming', 'confirmed', 'locked'])
         balance_current_contract = sc.balance_current_contract(testnet_address1)
         balance_current_contract_key_set = set(balance_current_contract.keys())
@@ -53,7 +59,7 @@ class TestSwitcheoClient(unittest.TestCase):
             balance_current_contract_child_key_set.issubset(expected_balance_current_contract_child_key_set))
 
     def test_balance_by_contract(self):
-        expected_balance_by_contract_key_set = set(['NEO', 'ETH', 'QTUM'])
+        expected_balance_by_contract_key_set = set(['NEO', 'ETH', 'QTUM', 'EOS'])
         expected_balance_by_contract_child_key_set = set(['V1', 'V1_5', 'V2', 'V3'])
         expected_balance_by_contract_sub_key_set = set(['confirming', 'confirmed', 'locked'])
         balance_by_contract = sc.balance_by_contract(testnet_address1)

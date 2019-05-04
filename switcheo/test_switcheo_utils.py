@@ -41,9 +41,10 @@ class TestSwitcheoUtils(unittest.TestCase):
     def test_current_contract_hash(self):
         pc = PublicClient()
         expected_current_contract_dict = {
-            'NEO': 'ae8a22a3dd8d976291071867204ff20be50d92e5',
-            'ETH': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf',
-            'QTUM': '0x2b25406b0000c3661e9c88890690fd4b5c7b4234'
+            'NEO': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e',
+            'ETH': '0x4dcf0244742e72309666db20d367f6dd196e884e',
+            'QTUM': '0x2b25406b0000c3661e9c88890690fd4b5c7b4234',
+            'EOS': 'oboluswitch4'
         }
         self.assertDictEqual(current_contract_hash(pc.contracts), expected_current_contract_dict)
 

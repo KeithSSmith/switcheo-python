@@ -414,7 +414,7 @@ class PublicClient(object):
         }
         return self.request.get(path='/trades/recent', params=api_params)
 
-    def get_pairs(self, base=None, show_details=False):
+    def get_pairs(self, base=None, show_details=False, show_inactive=False):
         """
         Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
         Execution of this function is as follows::
@@ -459,6 +459,8 @@ class PublicClient(object):
         api_params = {}
         if show_details:
             api_params["show_details"] = show_details
+        if show_inactive:
+            api_params["show_inactive"] = show_inactive
         if base is not None and base in ["NEO", "GAS", "SWTH", "USD", "ETH"]:
             api_params["bases"] = [base]
         return self.request.get(path='/exchange/pairs', params=api_params)

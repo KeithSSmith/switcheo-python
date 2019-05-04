@@ -47,7 +47,7 @@ class TestAuthenticatedClient(unittest.TestCase):
             'reason_code': 9,
             'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
             'transaction_hash': None,
-            'contract_hash': 'a195c1549e7da61b8da315765a790ac7e7633b82',
+            'contract_hash': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e',
             'approval_transaction_hash': None,
             'group_index': 0
         }

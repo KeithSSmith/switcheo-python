@@ -41,12 +41,7 @@ class TestPublicClient(unittest.TestCase):
 
     def test_get_last_price(self):
         last_price_dict = {
-            'SWTH': ['GAS', 'NEO'],
-            'GAS': ['NEO'],
-            'RHTC': ['NEO'],
-            'NRVEP': ['NEO'],
-            'JRC': ['ETH'],
-            'SWC': ['ETH']
+            'SWTH': ['ETH', 'NEO']
         }
         last_price_request = pc.get_last_price()
         for pair in last_price_request:
@@ -58,7 +53,7 @@ class TestPublicClient(unittest.TestCase):
     def test_get_offers(self):
         offers_list = [{
             'id': '023bff30-ca83-453c-90e9-95502b52f492',
-            'offer_asset': 'GAS',
+            'offer_asset': 'SWTH',
             'want_asset': 'NEO',
             'available_amount': 9509259,
             'offer_amount': 9509259,
@@ -101,8 +96,8 @@ class TestPublicClient(unittest.TestCase):
                      'NKNO_NEO', 'NOS_NEO', 'NRVE_NEO', 'OBT_NEO', 'ONT_NEO', 'PHX_NEO', 'PKC_NEO', 'PROQ_NEO',
                      'QLC_NEO', 'RCPT_NEO', 'RHT_NEO', 'RPX_NEO', 'SDS_NEO', 'SENNO_NEO', 'SOUL_NEO', 'TKY_NEO',
                      'TMN_NEO', 'TNC_NEO', 'TOLL_NEO', 'ZPT_NEO', 'BOLTC_NEO', 'MCTP_NEO', 'NRVEP_NEO', 'RHTC_NEO']
-        self.assertTrue(set(pc.get_pairs()).issuperset(set(all_pairs)))
-        self.assertTrue(set(pc.get_pairs(base="NEO")).issuperset(set(neo_pairs)))
+        self.assertTrue(set(pc.get_pairs(show_inactive=True)).issuperset(set(all_pairs)))
+        self.assertTrue(set(pc.get_pairs(base="NEO", show_inactive=True)).issuperset(set(neo_pairs)))
 
     def test_get_contracts(self):
         contracts_dict = {
@@ -110,13 +105,16 @@ class TestPublicClient(unittest.TestCase):
                 'V1': '0ec5712e0f7c63e4b0fea31029a28cea5e9d551f',
                 'V1_5': 'c41d8b0c30252ce7e8b6d95e9ce13fdd68d2a5a8',
                 'V2': 'a195c1549e7da61b8da315765a790ac7e7633b82',
-                'V3': 'ae8a22a3dd8d976291071867204ff20be50d92e5'
+                'V3': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e'
             },
             'ETH': {
-                'V1': '0x607af5164d95bd293dbe2b994c7d8aef6bec03bf'
+                'V1': '0x4dcf0244742e72309666db20d367f6dd196e884e'
             },
             'QTUM': {
                 'V1': '0x2b25406b0000c3661e9c88890690fd4b5c7b4234'
+            },
+            'EOS': {
+                'V1': 'oboluswitch4'
             }
         }
         self.assertDictEqual(pc.get_contracts(), contracts_dict)
@@ -143,6 +141,12 @@ class TestPublicClient(unittest.TestCase):
             'created_at': '2018-08-08T18:39:13.864Z',
             'status': 'processed',
             'order_status': 'processed',
+            'txn': None,
+            'offer_asset_blockchain': 'neo',
+            'want_asset_blockchain': 'neo',
+            'broadcast_cutoff_at': '2019-05-04T15:53:04.809Z',
+            'scheduled_cancellation_at': None,
+            'counterpart_swap': None,
             'fills': [],
             'fill_groups': [],
             'makes': []
