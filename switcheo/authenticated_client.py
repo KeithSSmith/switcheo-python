@@ -30,7 +30,7 @@ class AuthenticatedClient(PublicClient):
 
     def __init__(self,
                  blockchain='neo',
-                 contract_version='V2',
+                 contract_version='V3',
                  api_url='https://test-api.switcheo.network/',
                  api_version='/v2'):
         PublicClient.__init__(self,

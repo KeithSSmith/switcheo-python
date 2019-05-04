@@ -16,7 +16,7 @@ from switcheo.neo.utils import neo_get_scripthash_from_address
 
 contract_version_dict = {
     "eth": 'V1',
-    "neo": 'V2'
+    "neo": 'V3'
 }
 
 network_dict = {

@@ -110,7 +110,7 @@ class Request(object):
         try:
             r.raise_for_status()
         except requests.exceptions.HTTPError:
-            raise SwitcheoApiException(r.json()['error_code'], r.json()['error_message'], r.json()['error'])
+            raise SwitcheoApiException(r.json().get('error_code'), r.json().get('error_message'), r.json().get('error'))
         return r.json()
 
     def status(self):
