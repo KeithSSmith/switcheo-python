@@ -61,6 +61,9 @@ target/
 # PyCharm
 .idea
 
+# VSCode
+.vscode
+
 # NEO Wallets
 test_switcheo_wallet*
 
@@ -78,9 +81,7 @@ test.py*
 .pytest_cache/
 
 transaction\.json
-
 test\.cs
-
 test_eth\.py
-
 test_neo\.py
+websockets_client\.py
