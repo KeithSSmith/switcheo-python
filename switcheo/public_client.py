@@ -131,6 +131,75 @@ class PublicClient(object):
         }
         return self.request.get(path='/exchange/tokens', params=api_params)
 
+
+    def get_swap_pairs(self):
+        """
+        Retrieve available swap pairs on Switcheo Exchange.
+        Execution of this function is as follows::
+
+            get_swap_pairs()
+
+        The expected return result for this function is as follows::
+
+            [
+              "SWTH_ETH",
+              ...
+            ]
+
+        :return: List in the form of a JSON message with the available swap pairs on the Switcheo exchange.
+        """
+        return self.request.get(path='/exchange/swap_pairs')
+
+    def get_swap_pricing(self, pair):
+        """
+        Function to fetch information that can be used to calculate the price of swap pairs.
+        Execution of this function is as follows::
+
+            get_swap_pricing()
+
+        The expected return result for this function is as follows::
+
+            {
+                "buy": {
+                    "x": "449293223000000",
+                    "y": "122561935387988990000",
+                    "k": "55066246967587328805614770000000000"
+                },
+                "sell": {
+                    "x": "122561935387988990000",
+                    "y": "449293223000000",
+                    "k": "55066246967587328805614770000000000"
+                }
+            }
+
+        :param pair: The trading pair used to request pricing from.
+        :return: Dictionary in the form of a JSON message containing the pricing parameters.
+        """              
+        api_params = {
+            "pair": pair
+        }
+        return self.request.get(path='/exchange/swap_pricing', params=api_params)  
+
+    def get_atomic_swap_contracts(self):
+        """
+        Returns the current atomic swap contract hashes.
+        Please note that a different set of contract hashes should be used depending on the network you intend to interact with.
+        Execution of this function is as follows::
+
+            get_atomic_swap_contracts()
+
+        The expected return result for this function is as follows::
+
+            {
+                "ETH": {
+                    "V1": "<contract hash>"
+                }
+            }
+
+        :return: Dictionary in the form of a JSON message with the atomic swap contracts used on the Switcheo exchange.
+        """
+        return self.request.get(path='/exchange/atomic_swap_contracts')
+
     def get_candlesticks(self, pair, start_time, end_time, interval):
         """
         Function to fetch trading metrics from the past 24 hours for all trading pairs offered on the exchange.
