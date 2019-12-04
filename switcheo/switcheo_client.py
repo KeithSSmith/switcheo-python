@@ -38,7 +38,7 @@ class SwitcheoClient(AuthenticatedClient, PublicClient):
         self.api_url = url_dict[switcheo_network]
         self.blockchain = network_dict[blockchain_network]
         self.contract_version = current_contract_version(
-            PublicClient().get_latest_contracts()[upper(self.blockchain)], PublicClient().get_contracts())
+            PublicClient().get_latest_contracts()[self.blockchain.upper()], PublicClient().get_contracts())
         super().__init__(blockchain=self.blockchain,
                          contract_version=self.contract_version,
                          api_url=self.api_url)
