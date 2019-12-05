@@ -49,14 +49,9 @@ class SwitcheoClient(AuthenticatedClient, PublicClient):
 
     def balance_current_contract(self, *addresses):
         address_list = []
-        contract_dict = {}
         for address in addresses:
             address_list.append(neo_get_scripthash_from_address(address=address))
-        current_contract = self.current_contract_hash
-        for chain in current_contract.keys():
-            contract_dict[chain] =\
-                self.get_balance(addresses=address_list, contracts=current_contract[chain])
-        return contract_dict
+        return self.get_balance(addresses=address_list, contracts=self.current_contract_hash)
 
     def balance_by_contract(self, *addresses):
         address_list = []

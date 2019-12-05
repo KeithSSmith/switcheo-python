@@ -4,7 +4,7 @@ from switcheo.public_client import PublicClient
 
 
 pc = PublicClient(blockchain='neo')
-pc_eth = PublicClient(blockchain='eth', contract_version='V1')
+pc_eth = PublicClient(blockchain='eth', contract_version='V2')
 
 
 class TestPublicClient(unittest.TestCase):
@@ -90,12 +90,9 @@ class TestPublicClient(unittest.TestCase):
             pc.get_trades(pair="SWTH_NEO", limit=1000000)
 
     def test_get_pairs(self):
-        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO']
-        neo_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'APH_NEO', 'ASA_NEO', 'AVA_NEO', 'COUP_NEO', 'CPX_NEO',
-                     'DBC_NEO', 'EFX_NEO', 'FTWX_NEO', 'GALA_NEO', 'GUARD_NEO', 'LRN_NEO', 'LX_NEO', 'MCT_NEO',
-                     'NKNO_NEO', 'NOS_NEO', 'NRVE_NEO', 'OBT_NEO', 'ONT_NEO', 'PHX_NEO', 'PKC_NEO', 'PROQ_NEO',
-                     'QLC_NEO', 'RCPT_NEO', 'RHT_NEO', 'RPX_NEO', 'SDS_NEO', 'SENNO_NEO', 'SOUL_NEO', 'TKY_NEO',
-                     'TMN_NEO', 'TNC_NEO', 'TOLL_NEO', 'ZPT_NEO', 'BOLTC_NEO', 'MCTP_NEO', 'NRVEP_NEO', 'RHTC_NEO']
+        all_pairs = ['GAS_NEO', 'SWTH_NEO', 'TMN_NEO', 'TKY_NEO', 'LEO_ETH', 'MKR_ETH', 'ETH_WBTC']
+        neo_pairs = ['GAS_NEO', 'SWTH_NEO', 'ACAT_NEO', 'ASA_NEO', 'AVA_NEO', 'FTWX_NEO', 'MCT_NEO',
+                     'NOS_NEO', 'NRVE_NEO', 'PHX_NEO', 'QLC_NEO', 'SOUL_NEO', 'TKY_NEO', 'TMN_NEO']
         self.assertTrue(set(pc.get_pairs(show_inactive=True)).issuperset(set(all_pairs)))
         self.assertTrue(set(pc.get_pairs(base="NEO", show_inactive=True)).issuperset(set(neo_pairs)))
 
@@ -108,13 +105,14 @@ class TestPublicClient(unittest.TestCase):
                 'V3': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e'
             },
             'ETH': {
-                'V1': '0x4dcf0244742e72309666db20d367f6dd196e884e'
-            },
-            'QTUM': {
-                'V1': '0x2b25406b0000c3661e9c88890690fd4b5c7b4234'
+                'V1': '0x4dcf0244742e72309666db20d367f6dd196e884e',
+                'V2': '0x31f1592e5d1255b7aa731e8a5ddf8289b8ef7b46'
             },
             'EOS': {
-                'V1': 'oboluswitch4'
+                'V1': 'toweredbyob2'
+            },
+            'QTUM': {
+                'V1': 'fake_qtum_contract_hash'
             }
         }
         self.assertDictEqual(pc.get_contracts(), contracts_dict)
@@ -147,6 +145,7 @@ class TestPublicClient(unittest.TestCase):
             'broadcast_cutoff_at': '2019-05-04T15:53:04.809Z',
             'scheduled_cancellation_at': None,
             'counterpart_swap': None,
+            "unlock_swap_txn": None,
             'fills': [],
             'fill_groups': [],
             'makes': []
