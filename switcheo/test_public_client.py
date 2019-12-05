@@ -68,7 +68,7 @@ class TestPublicClient(unittest.TestCase):
                 offered_set_list.add(key)
         self.assertTrue(offered_set_list.issubset(offers_set_list))
 
-        offered_list = pc_eth.get_offers(pair="JRC_ETH")
+        offered_list = pc_eth.get_offers(pair="SWC_ETH")
         self.assertTrue(set(offered_list[0].keys()).issubset(offers_set_list))
         offered_set_list = set()
         for offer in offered_list:
