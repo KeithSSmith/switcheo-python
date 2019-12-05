@@ -30,8 +30,10 @@ class TestAuthenticatedClient(unittest.TestCase):
             'transaction_hash': None,
             'contract_hash': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e',
             'approval_transaction_hash': None,
-            'group_index': 0
+            'group_index': 0,
+            'params_hash': None
         }
+
         swth_withdrawal_dict = ac.withdrawal(asset="SWTH", amount=0.000001, private_key=kp)
         swth_withdrawal_dict.pop('id')
         swth_withdrawal_dict.pop('status')
@@ -49,7 +51,8 @@ class TestAuthenticatedClient(unittest.TestCase):
             'transaction_hash': None,
             'contract_hash': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e',
             'approval_transaction_hash': None,
-            'group_index': 0
+            'group_index': 0,
+            'params_hash': None
         }
         gas_withdrawal_dict = ac.withdrawal(asset="GAS", amount=0.000001, private_key=kp)
         gas_withdrawal_dict.pop('id')

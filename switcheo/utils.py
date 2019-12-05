@@ -7,6 +7,7 @@
 import json
 import requests
 import time
+import hashlib
 
 
 def get_epoch_milliseconds():
@@ -20,6 +21,16 @@ def stringify_message(message):
         message
     """
     return json.dumps(message, sort_keys=True, separators=(',', ':'))
+
+
+def sha1_hash_digest(message):
+    """
+    Converts Stringified (JavaScript) JSON to a SHA-1 Hash.
+
+    Args:
+        message
+    """
+    return hashlib.sha1(message.encode()).hexdigest()
 
 
 def reverse_hex(message):
@@ -81,6 +92,14 @@ def current_contract_hash(contracts):
         contract_dict[chain] = contracts[chain][max_key_str]
     return contract_dict
 
+
+def current_contract_version(contract, contracts):
+    contract_dict = {}
+    for chain in contracts:
+        for key in contracts[chain].keys():
+            contract_hash = contracts[chain][key]
+            contract_dict[contract_hash] = key
+    return contract_dict[contract]
 
 
 class SwitcheoApiException(Exception):
