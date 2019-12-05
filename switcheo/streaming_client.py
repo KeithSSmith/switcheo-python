@@ -121,22 +121,12 @@ class TradeEventsNamespace(SocketIOClientNamespace):
         update_digest = data["digest"]
         update_pair = data["room"]["pair"]
         update_events = data["events"]
-        # update_events_count = len(data["events"])
         update_limit = data["limit"]
         self.lock.acquire()
-        i = 0
-        for event in update_events:
-            self.trade_events[update_pair]["trades"].insert(i, event)
-            i += 1
+        self.trade_events[update_pair]["trades"] = update_events + \
+            self.trade_events[update_pair]["trades"]
         trade_slice = update_limit - 1
         self.trade_events[update_pair]["trades"] = self.trade_events[update_pair]["trades"][0:trade_slice]
-        # trade_events_count = len(self.trade_events[update_pair])
-        # trade_events_pop = update_limit - trade_events_count - update_events_count
-        # if trade_events_pop < 0:
-        # del self.trade_events[update_pair]["trades"][trade_events_pop]
-        # self.trade_events[update_pair]["trades"] = self.trade_events[update_pair]["trades"] + update_events
-        # self.trade_events[update_pair]["trades"] = sorted(
-        # self.trade_events[update_pair]["trades"], key=itemgetter("timestamp"), reverse=True)
         trades = self.trade_events[update_pair]["trades"]
         self.lock.release()
         trade_digest_hash = sha1_hash_digest(stringify_message(trades))
