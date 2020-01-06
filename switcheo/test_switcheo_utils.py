@@ -42,7 +42,7 @@ class TestSwitcheoUtils(unittest.TestCase):
         pc = PublicClient()
         expected_current_contract_dict = {
             'NEO': '58efbb3cca7f436a55b1a05c0f36788d2d9a032e',
-            'ETH': '0x31f1592e5d1255b7aa731e8a5ddf8289b8ef7b46',
+            'ETH': '0x4d19fd42e780d56ff6464fe9e7d5158aee3d125d',
             'QTUM': 'fake_qtum_contract_hash',
             'EOS': 'toweredbyob2'
         }

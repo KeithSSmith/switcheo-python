@@ -106,7 +106,7 @@ class TestPublicClient(unittest.TestCase):
             },
             'ETH': {
                 'V1': '0x4dcf0244742e72309666db20d367f6dd196e884e',
-                'V2': '0x31f1592e5d1255b7aa731e8a5ddf8289b8ef7b46'
+                'V2': '0x4d19fd42e780d56ff6464fe9e7d5158aee3d125d'
             },
             'EOS': {
                 'V1': 'toweredbyob2'

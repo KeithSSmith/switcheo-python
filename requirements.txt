@@ -1,4 +1,4 @@
-neocore==0.5.4
+neocore==0.5.6
 python-socketio[client]==4.4.0
-requests>=2.20.0
-web3==4.8.2
+requests==2.22.0
+web3==5.4.0
