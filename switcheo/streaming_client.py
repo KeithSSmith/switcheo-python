@@ -5,22 +5,22 @@ import threading
 
 
 class OrderBooksNamespace(SocketIOClientNamespace):
-
+    
     def __init__(self):
         self.lock = threading.Lock()
         self.namespace = '/v2/books'
         self.order_book = {}
         SocketIOClientNamespace.__init__(self, namespace=self.namespace)
-
+    
     def on_connect(self):
         pass
-
+    
     def on_disconnect(self):
         pass
-
+    
     def on_join(self):
         pass
-
+    
     def on_all(self, data):
         self.lock.acquire()
         self.order_book[data["room"]["pair"]] = data
@@ -31,16 +31,18 @@ class OrderBooksNamespace(SocketIOClientNamespace):
         if digest_hash != book_digest_hash:
             self.emit(event="leave", data=data["room"], namespace='/v2/books')
             self.emit(event="join", data=data["room"], namespace='/v2/books')
-
+    
     def on_updates(self, data):
         update_digest = data["digest"]
         update_pair = data["room"]["pair"]
         update_events = data["events"]
+        buy_event = False
+        sell_event = False
+        if "symbol" in self.order_book[update_pair]["book"]:
+            del self.order_book[update_pair]["book"]["symbol"]
         self.lock.acquire()
         for event in update_events:
             price_match = False
-            buy_event = False
-            sell_event = False
             event_iteration = 0
             if event["side"] == "buy":
                 event_side = "buys"
@@ -55,8 +57,7 @@ class OrderBooksNamespace(SocketIOClientNamespace):
                     price_match = True
                     updated_amount = int(side["amount"]) + int(event_change)
                     if updated_amount == 0:
-                        self.order_book[update_pair]["book"][event_side].remove(
-                            side)
+                        self.order_book[update_pair]["book"][event_side].remove(side)
                     else:
                         updated_book = {}
                         updated_book["amount"] = str(updated_amount)
@@ -68,8 +69,7 @@ class OrderBooksNamespace(SocketIOClientNamespace):
                 new_book = {}
                 new_book["amount"] = event_change
                 new_book["price"] = event_price
-                self.order_book[update_pair]["book"][event_side].append(
-                    new_book)
+                self.order_book[update_pair]["book"][event_side].append(new_book)
         if buy_event and sell_event:
             self.order_book[update_pair]["book"]["buys"] = sorted(
                 self.order_book[update_pair]["book"]["buys"], key=itemgetter("price"), reverse=True)
