@@ -8,7 +8,7 @@ Usage:
     from switcheo.public_client import PublicClient
 """
 
-from switcheo.utils import current_contract_hash, Request
+from switcheo.utils import Request
 
 
 class PublicClient(object):
@@ -37,7 +37,7 @@ class PublicClient(object):
         self.contracts = self.get_contracts()
         self.contract_version = contract_version.upper()
         self.contract_hash = self.contracts[self.blockchain_key][self.contract_version]
-        self.current_contract_hash = current_contract_hash(self.contracts)[self.blockchain_key]
+        self.current_contract_hash = self.get_latest_contracts()[self.blockchain_key]
 
     def get_exchange_status(self):
         """
@@ -72,25 +72,102 @@ class PublicClient(object):
         :return: Dictionary in the form of a JSON message with the exchange epoch time in milliseconds.
         """
         return self.request.get(path='/exchange/timestamp')
-
-    def get_exchange_message(self):
+    
+    def get_contracts(self):
         """
-        Function to fetch the Switcheo Exchange message to ensure pertinent information is handled gracefully.
+        Function to fetch the contract hashes for each smart contract deployed on the defined blockchain.
         Execution of this function is as follows::
 
-            get_exchange_message()
+            get_contracts()
 
         The expected return result for this function is as follows::
 
             {
-                'message': 'Welcome to Switcheo Beta.',
-                'message_type': 'info'
+                'NEO': {
+                    'V1': '0ec5712e0f7c63e4b0fea31029a28cea5e9d551f',
+                    'V1_5': '01bafeeafe62e651efc3a530fde170cf2f7b09bd',
+                    'V2': '91b83e96f2a7c4fdf0c1688441ec61986c7cae26'
+                },
+                'ETH': {
+                    'V1': '0x0000000000000000000000000000000000000000'
+                }
             }
 
-        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        :return: Dictionary containing the list of smart contract hashes per blockchain and version.
         """
-        return self.request.get(path='/exchange/announcement_message')
+        return self.request.get(path='/exchange/contracts')
 
+    def get_latest_contracts(self):
+        """
+        Function to fetch the active contract hash for each smart contract deployed on the defined blockchain.
+        Execution of this function is as follows::
+
+            get_latest_contracts()
+
+        The expected return result for this function is as follows::
+
+            {
+                "NEO": "d524fbb2f83f396368bc0183f5e543cae54ef532",
+                "ETH": "0x6ee18298fd6bc2979df9d27569842435a7d55e65",
+                "EOS": "oboluswitch4",
+                "QTUM": "0x2b25406b0000c3661e9c88890690fd4b5c7b4234"
+            }
+
+        :return: Dictionary containing the latest smart contract hash for each blockchain.
+        """
+        return self.request.get(path='/exchange/latest_contracts')
+    
+    def get_pairs(self, base=None, show_details=False, show_inactive=False):
+        """
+        Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
+        Execution of this function is as follows::
+
+            get_pairs()                  # Fetch all pairs
+            get_pairs(base="SWTH")       # Fetch only SWTH base pairs
+            get_pairs(show_details=True) # Fetch all pairs with extended information !Attention return value changes!
+
+        The expected return result for this function is as follows::
+
+            [
+                'GAS_NEO',
+                'SWTH_NEO',
+                'MCT_NEO',
+                'NKN_NEO',
+                ....
+                'SWTH_GAS',
+                'MCT_GAS',
+                'NKN_GAS',
+                ....
+                'MCT_SWTH',
+                'NKN_SWTH'
+            ]
+
+        If you use the show_details parameter the server return a list with dictionaries as follows::
+
+             [
+                {'name': 'GAS_NEO', 'precision': 3},
+                {'name': 'SWTH_NEO', 'precision': 6},
+                {'name': 'ACAT_NEO', 'precision': 8},
+                {'name': 'APH_NEO', 'precision': 5},
+                {'name': 'ASA_NEO', 'precision': 8},
+                ....
+            ]
+
+        :param base: The base trade pair to optionally filter available trade pairs.
+        :type base: str
+        :param show_details: Extended information for the pairs.
+        :type show_details: bool
+        :return: List of trade pairs available for trade on Switcheo.
+        """
+        api_params = {}
+        if show_details:
+            api_params["show_details"] = show_details
+        if show_inactive:
+            api_params["show_inactive"] = show_inactive
+        if base is not None and base in ["NEO", "GAS", "SWTH", "USD", "ETH"]:
+            api_params["bases"] = [base]
+        return self.request.get(path='/exchange/pairs', params=api_params)
+    
     def get_token_details(self, show_listing_details=False, show_inactive=False):
         """
         Function to fetch the available tokens available to trade on the Switcheo exchange.
@@ -131,72 +208,149 @@ class PublicClient(object):
         }
         return self.request.get(path='/exchange/tokens', params=api_params)
 
-
-    def get_swap_pairs(self):
+    def get_exchange_message(self):
         """
-        Retrieve available swap pairs on Switcheo Exchange.
+        Function to fetch the Switcheo Exchange message to ensure pertinent information is handled gracefully.
         Execution of this function is as follows::
 
-            get_swap_pairs()
+            get_exchange_message()
+
+        The expected return result for this function is as follows::
+
+            {
+                'message': 'Welcome to Switcheo Beta.',
+                'message_type': 'info'
+            }
+
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        """
+        return self.request.get(path='/exchange/announcement_message')
+    
+    def get_exchange_fees(self):
+        """
+        Function to fetch the Switcheo Exchange fees to assist with automated trading calculations.
+        Execution of this function is as follows::
+
+            get_exchange_fees()
 
         The expected return result for this function is as follows::
 
             [
-              "SWTH_ETH",
-              ...
+                {
+                    "maker": {
+                        "default": 0
+                    },
+                    "taker": {
+                        "default": 0.002
+                    },
+                    "network_fee_subsidy_threshold": {
+                        "neo": 0.1,
+                        "eth": 0.1
+                    },
+                    "max_taker_fee_ratio": {
+                        "neo": 0.005,
+                        "eth": 0.1
+                    },
+                    "native_fee_discount": 0.75,
+                    "native_fee_asset_id": "ab38352559b8b203bde5fddfa0b07d8b2525e132",
+                    "enforce_native_fees": [
+                        "RHT",
+                        "RHTC"
+                    ],
+                    "native_fee_exchange_rates": {
+                        "NEO": "952.38095238",
+                        "GAS": "297.14285714",
+                        ...
+                        "ETH": "0",
+                        "JRC": "0",
+                        "SWC": "0"
+                    },
+                    "network_fees": {
+                        "eth": "2466000000000000",
+                        "neo": "200000"
+                    },
+                    "network_fees_for_wdl": {
+                        "eth": "873000000000000",
+                        "neo": "0"
+                    }
+                }
             ]
 
-        :return: List in the form of a JSON message with the available swap pairs on the Switcheo exchange.
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
         """
-        return self.request.get(path='/exchange/swap_pairs')
-
-    def get_swap_pricing(self, pair):
+        return self.request.get(path='/fees')
+    
+    def get_exchange_swap_pairs(self):
         """
-        Function to fetch information that can be used to calculate the price of swap pairs.
+        Function to fetch the Switcheo Exchange list of atomic swap pairs.
         Execution of this function is as follows::
 
-            get_swap_pricing()
+            get_exchange_swap_pairs()
+
+        The expected return result for this function is as follows::
+
+            [
+                "SWTH_ETH",
+                "NEO_ETH",
+                "EOS_ETH",
+                "NEO_DAI",
+                "SDUSD_DAI",
+                "EOS_NEO",
+                "NEO_WBTC"
+            ]
+
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        """
+        return self.request.get(path='/exchange/swap_pairs')
+    
+    def get_exchange_swap_pricing(self, pair):
+        """
+        Function to fetch the swap pricing for the pair requested.
+        Execution of this function is as follows::
+
+            get_exchange_swap_pricing(pair="SWTH_ETH")
 
         The expected return result for this function is as follows::
 
             {
                 "buy": {
-                    "x": "449293223000000",
-                    "y": "122561935387988990000",
-                    "k": "55066246967587328805614770000000000"
+                    "x": "740144428000000",
+                    "y": "96969492513000000000",
+                    "k": "71771429569484667564000000000000000"
                 },
                 "sell": {
-                    "x": "122561935387988990000",
-                    "y": "449293223000000",
-                    "k": "55066246967587328805614770000000000"
+                    "x": "96969492513000000000",
+                    "y": "740144428000000",
+                    "k": "71771429569484667564000000000000000"
                 }
             }
 
-        :param pair: The trading pair used to request pricing from.
-        :return: Dictionary in the form of a JSON message containing the pricing parameters.
-        """              
+        :param pair: The trading pair used to request candle statistics.
+        :type pair: str
+        :return: List of dictionaries containing the candles statistics based on the parameter filters.
+        """
         api_params = {
             "pair": pair
         }
-        return self.request.get(path='/exchange/swap_pricing', params=api_params)  
-
-    def get_atomic_swap_contracts(self):
+        return self.request.get(path='/exchange/swap_pricing', params=api_params)
+    
+    def get_exchange_swap_contracts(self):
         """
-        Returns the current atomic swap contract hashes.
-        Please note that a different set of contract hashes should be used depending on the network you intend to interact with.
+        Function to fetch the Switcheo Exchange list of atomic swap contracts.
         Execution of this function is as follows::
 
-            get_atomic_swap_contracts()
+            get_exchange_swap_contracts()
 
         The expected return result for this function is as follows::
 
             {
                 "ETH": {
-                    "V1": "<contract hash>"
+                    "V1": "0xeab64b2320a1fc1e65f4c7253385ec18e4b4313b"
                 }
             }
 
-        :return: Dictionary in the form of a JSON message with the atomic swap contracts used on the Switcheo exchange.
+        :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        
         """
         return self.request.get(path='/exchange/atomic_swap_contracts')
 
@@ -482,81 +636,6 @@ class PublicClient(object):
             "pair": pair
         }
         return self.request.get(path='/trades/recent', params=api_params)
-
-    def get_pairs(self, base=None, show_details=False, show_inactive=False):
-        """
-        Function to fetch a list of trading pairs offered on the Switcheo decentralized exchange.
-        Execution of this function is as follows::
-
-            get_pairs()                  # Fetch all pairs
-            get_pairs(base="SWTH")       # Fetch only SWTH base pairs
-            get_pairs(show_details=True) # Fetch all pairs with extended information !Attention return value changes!
-
-        The expected return result for this function is as follows::
-
-            [
-                'GAS_NEO',
-                'SWTH_NEO',
-                'MCT_NEO',
-                'NKN_NEO',
-                ....
-                'SWTH_GAS',
-                'MCT_GAS',
-                'NKN_GAS',
-                ....
-                'MCT_SWTH',
-                'NKN_SWTH'
-            ]
-
-        If you use the show_details parameter the server return a list with dictionaries as follows::
-
-             [
-                {'name': 'GAS_NEO', 'precision': 3},
-                {'name': 'SWTH_NEO', 'precision': 6},
-                {'name': 'ACAT_NEO', 'precision': 8},
-                {'name': 'APH_NEO', 'precision': 5},
-                {'name': 'ASA_NEO', 'precision': 8},
-                ....
-            ]
-
-        :param base: The base trade pair to optionally filter available trade pairs.
-        :type base: str
-        :param show_details: Extended information for the pairs.
-        :type show_details: bool
-        :return: List of trade pairs available for trade on Switcheo.
-        """
-        api_params = {}
-        if show_details:
-            api_params["show_details"] = show_details
-        if show_inactive:
-            api_params["show_inactive"] = show_inactive
-        if base is not None and base in ["NEO", "GAS", "SWTH", "USD", "ETH"]:
-            api_params["bases"] = [base]
-        return self.request.get(path='/exchange/pairs', params=api_params)
-
-    def get_contracts(self):
-        """
-        Function to fetch the contract hashes for each smart contract deployed on the defined blockchain.
-        Execution of this function is as follows::
-
-            get_contracts()
-
-        The expected return result for this function is as follows::
-
-            {
-                'NEO': {
-                    'V1': '0ec5712e0f7c63e4b0fea31029a28cea5e9d551f',
-                    'V1_5': '01bafeeafe62e651efc3a530fde170cf2f7b09bd',
-                    'V2': '91b83e96f2a7c4fdf0c1688441ec61986c7cae26'
-                },
-                'ETH': {
-                    'V1': '0x0000000000000000000000000000000000000000'
-                }
-            }
-
-        :return: Dictionary containing the list of smart contract hashes per blockchain and version.
-        """
-        return self.request.get(path='/contracts')
 
     def get_orders(self, address, chain_name='NEO', contract_version='V3', pair=None, from_epoch_time=None,
                    order_status=None, before_id=None, limit=50):

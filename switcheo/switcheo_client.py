@@ -9,15 +9,10 @@ Usage:
     from switcheo.switcheo_client import SwitcheoClient
 """
 
-from switcheo.utils import current_contract_hash
+from switcheo.utils import current_contract_version
 from switcheo.authenticated_client import AuthenticatedClient
 from switcheo.public_client import PublicClient
 from switcheo.neo.utils import neo_get_scripthash_from_address
-
-contract_version_dict = {
-    "eth": 'V1',
-    "neo": 'V3'
-}
 
 network_dict = {
     "neo": "neo",
@@ -42,7 +37,8 @@ class SwitcheoClient(AuthenticatedClient, PublicClient):
                  private_key=None):
         self.api_url = url_dict[switcheo_network]
         self.blockchain = network_dict[blockchain_network]
-        self.contract_version = contract_version_dict[self.blockchain]
+        self.contract_version = current_contract_version(
+            PublicClient().get_latest_contracts()[self.blockchain.upper()], PublicClient().get_contracts())
         super().__init__(blockchain=self.blockchain,
                          contract_version=self.contract_version,
                          api_url=self.api_url)
@@ -53,14 +49,9 @@ class SwitcheoClient(AuthenticatedClient, PublicClient):
 
     def balance_current_contract(self, *addresses):
         address_list = []
-        contract_dict = {}
         for address in addresses:
             address_list.append(neo_get_scripthash_from_address(address=address))
-        current_contract = current_contract_hash(self.contracts)
-        for chain in current_contract.keys():
-            contract_dict[chain] =\
-                self.get_balance(addresses=address_list, contracts=current_contract[chain])
-        return contract_dict
+        return self.get_balance(addresses=address_list, contracts=self.current_contract_hash)
 
     def balance_by_contract(self, *addresses):
         address_list = []
