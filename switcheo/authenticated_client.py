@@ -461,8 +461,94 @@ class AuthenticatedClient(PublicClient):
                                          order_type=order_type)
         return self.execute_order(order_params=create_order, private_key=private_key)
 
-    def create_order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit",
-                     otc_address=None):
+    def order(self, pair, side, private_key, price=None, quantity=None, use_native_token=True, 
+              order_type="limit", offer_amount=None, receiving_address=None, worst_acceptable_price=None):
+        """
+        This function is a wrapper function around the create and execute order functions to help make this processes
+        simpler for the end user by combining these requests in 1 step. Trading can take place on normal (spot) markets 
+        and atomic swap markets. The required arguments differ between those cases. 
+        Execution of this function for spot- and swap-markets respectively is as follows::
+
+            order(pair="SWTH_NEO", side="buy",
+                  price=0.0002, quantity=100, 
+                  private_key=kp, use_native_token=True, order_type="limit")
+
+            order(pair="SWTH_ETH", side="buy",
+                  offer_amount=0.1, receiving_address=fea2b883725ef2d194c9060f606cd0a0468a2c59, 
+                  private_key=kp, use_native_token=True, order_type="limit")
+
+        The expected return result for this function is the same as the execute_order function::
+
+            {
+                'id': '4e6a59fd-d750-4332-aaf0-f2babfa8ad67',
+                'blockchain': 'neo',
+                'contract_hash': 'a195c1549e7da61b8da315765a790ac7e7633b82',
+                'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
+                'side': 'buy',
+                'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+                'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
+                'offer_amount': '2000000',
+                'want_amount': '10000000000',
+                'transfer_amount': '0',
+                'priority_gas_amount': '0',
+                'use_native_token': True,
+                'native_fee_transfer_amount': 0,
+                'deposit_txn': None,
+                'created_at': '2018-08-05T10:38:37.714Z',
+                'status': 'processed',
+                'fills': [],
+                'makes': [
+                    {
+                        'id': 'e30a7fdf-779c-4623-8f92-8a961450d843',
+                        'offer_hash': 'b45ddfb97ade5e0363d9e707dac9ad1c530448db263e86494225a0025006f968',
+                        'available_amount': '2000000',
+                        'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+                        'offer_amount': '2000000',
+                        'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
+                        'want_amount': '10000000000',
+                        'filled_amount': '0.0',
+                        'txn': None,
+                        'cancel_txn': None,
+                        'price': '0.0002',
+                        'status': 'confirming',
+                        'created_at': '2018-08-05T10:38:37.731Z',
+                        'transaction_hash': '5c4cb1e73b9f2e608b6e768e0654649a4d15e08a7fe63fc536c454fa563a2f0f',
+                        'trades': []
+                    }
+                ]
+            }
+
+        :param pair: The trading pair this order is being submitted for.
+        :type pair: str
+        :param side: The side of the trade being submitted i.e. buy or sell
+        :type side: str
+        :param price: The price target for this trade.
+        :type price: float
+        :param quantity: The amount of the asset being exchanged in the trade.
+        :type quantity: float
+        :param private_key: The Private Key (ETH) or KeyPair (NEO) for the wallet being used to sign deposit message.
+        :type private_key: KeyPair or str
+        :param use_native_token: Flag to indicate whether or not to pay fees with the Switcheo native token.
+        :type use_native_token: bool
+        :param order_type: The type of order being submitted, currently this can only be a limit order.
+        :type order_type: str
+        :return: Dictionary of the transaction on the order book.
+        :type offer_amount: str
+        :return: The amount of the asset that is offered in the swap trade.
+        :type receiving_address:
+        :return: The address the tokens received in the swap are sent to.
+        :type worst_acceptable_price:
+        :return: The lower or upper price limit for which the trade will be performed
+        """
+        create_order = self.create_order(private_key=private_key, pair=pair, side=side, price=price,
+                                         quantity=quantity, use_native_token=use_native_token,
+                                         order_type=order_type, offer_amount=offer_amount, 
+                                         receiving_address=receiving_address, worst_acceptable_price=worst_acceptable_price)
+        return self.execute_order(order_params=create_order, private_key=private_key)
+
+    def create_order(self, pair, side, private_key, price=None, quantity=None, use_native_token=True, 
+                     order_type="limit", otc_address=None, offer_amount=None, receiving_address=None, 
+                     worst_acceptable_price=None):
         """
         Function to create an order for the trade pair and details requested.
         Execution of this function is as follows::
@@ -571,6 +657,13 @@ class AuthenticatedClient(PublicClient):
         :param otc_address: The address to trade with for Over the Counter exchanges.
         :type otc_address: str
         :return: Dictionary of order details to specify which parts of the trade will be filled (taker) or open (maker)
+        :type offer_amount: str
+        :return: The amount of the asset that is offered in the swap trade.
+        :type receiving_address:
+        :return: The address the tokens received in the swap are sent to.
+        :type worst_acceptable_price:
+        :return: The lower or upper price limit for which the trade will be performed
+
         """
         if side.lower() not in ["buy", "sell"]:
             raise ValueError("Allowed trade types are buy or sell, you entered {}".format(side.lower()))
@@ -578,17 +671,27 @@ class AuthenticatedClient(PublicClient):
             raise ValueError("Allowed order type is limit, you entered {}".format(order_type.lower()))
         if order_type.lower() == "otc" and otc_address is None:
             raise ValueError("OTC Address is required when trade type is otc (over the counter).")
+
         order_params = {
             "blockchain": self.blockchain,
             "pair": pair,
             "side": side,
-            "price": '{:.8f}'.format(price) if order_type.lower() != "market" else None,
-            "quantity": str(self.blockchain_amount[self.blockchain](quantity)),
             "use_native_tokens": use_native_token,
-            "order_type": order_type,
             "timestamp": get_epoch_milliseconds(),
             "contract_hash": self.contract_hash
         }
+
+        if not offer_amount is None:
+            order_params["price"] = None
+            order_params["offer_amount"] = str(self.blockchain_amount[self.blockchain](offer_amount))
+            order_params["receiving_address"] = receiving_address
+            order_params["worst_acceptable_price"] = worst_acceptable_price
+            order_params["order_type"] = "market"
+        else:
+            order_params["price"] = '{:.8f}'.format(price) if order_type.lower() != "market" else None
+            order_params["quantity"] = str(self.blockchain_amount[self.blockchain](quantity))
+            order_params["order_type"] = order_type
+
         api_params = self.sign_create_order_function[self.blockchain](order_params, private_key)
         return self.request.post(path='/orders', json_data=api_params)
 
