@@ -291,6 +291,10 @@ class AuthenticatedClient(PublicClient):
         :return: Dictionary with the result status of the deposit attempt.
         """
         create_deposit = self.create_deposit(asset=asset, amount=amount, private_key=private_key)
+        
+        if 'transaction' in create_deposit and 'invoke' in create_deposit['transaction']:
+            del create_deposit['transaction']['invoke']
+
         return self.execute_deposit(deposit_params=create_deposit, private_key=private_key)
 
     def create_deposit(self, asset, amount, private_key):
@@ -389,77 +393,6 @@ class AuthenticatedClient(PublicClient):
         api_params = self.sign_execute_deposit_function[self.blockchain](deposit_params, private_key)
         return self.request.post(path='/deposits/{}/broadcast'.format(deposit_id), json_data=api_params)
 
-    def order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit"):
-        """
-        This function is a wrapper function around the create and execute order functions to help make this processes
-        simpler for the end user by combining these requests in 1 step.
-        Execution of this function is as follows::
-
-            order(pair="SWTH_NEO", side="buy",
-                  price=0.0002, quantity=100, private_key=kp,
-                  use_native_token=True, order_type="limit")
-
-        The expected return result for this function is the same as the execute_order function::
-
-            {
-                'id': '4e6a59fd-d750-4332-aaf0-f2babfa8ad67',
-                'blockchain': 'neo',
-                'contract_hash': 'a195c1549e7da61b8da315765a790ac7e7633b82',
-                'address': 'fea2b883725ef2d194c9060f606cd0a0468a2c59',
-                'side': 'buy',
-                'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
-                'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
-                'offer_amount': '2000000',
-                'want_amount': '10000000000',
-                'transfer_amount': '0',
-                'priority_gas_amount': '0',
-                'use_native_token': True,
-                'native_fee_transfer_amount': 0,
-                'deposit_txn': None,
-                'created_at': '2018-08-05T10:38:37.714Z',
-                'status': 'processed',
-                'fills': [],
-                'makes': [
-                    {
-                        'id': 'e30a7fdf-779c-4623-8f92-8a961450d843',
-                        'offer_hash': 'b45ddfb97ade5e0363d9e707dac9ad1c530448db263e86494225a0025006f968',
-                        'available_amount': '2000000',
-                        'offer_asset_id': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
-                        'offer_amount': '2000000',
-                        'want_asset_id': 'ab38352559b8b203bde5fddfa0b07d8b2525e132',
-                        'want_amount': '10000000000',
-                        'filled_amount': '0.0',
-                        'txn': None,
-                        'cancel_txn': None,
-                        'price': '0.0002',
-                        'status': 'confirming',
-                        'created_at': '2018-08-05T10:38:37.731Z',
-                        'transaction_hash': '5c4cb1e73b9f2e608b6e768e0654649a4d15e08a7fe63fc536c454fa563a2f0f',
-                        'trades': []
-                    }
-                ]
-            }
-
-        :param pair: The trading pair this order is being submitted for.
-        :type pair: str
-        :param side: The side of the trade being submitted i.e. buy or sell
-        :type side: str
-        :param price: The price target for this trade.
-        :type price: float
-        :param quantity: The amount of the asset being exchanged in the trade.
-        :type quantity: float
-        :param private_key: The Private Key (ETH) or KeyPair (NEO) for the wallet being used to sign deposit message.
-        :type private_key: KeyPair or str
-        :param use_native_token: Flag to indicate whether or not to pay fees with the Switcheo native token.
-        :type use_native_token: bool
-        :param order_type: The type of order being submitted, currently this can only be a limit order.
-        :type order_type: str
-        :return: Dictionary of the transaction on the order book.
-        """
-        create_order = self.create_order(private_key=private_key, pair=pair, side=side, price=price,
-                                         quantity=quantity, use_native_token=use_native_token,
-                                         order_type=order_type)
-        return self.execute_order(order_params=create_order, private_key=private_key)
 
     def order(self, pair, side, private_key, price=None, quantity=None, use_native_token=True, 
               order_type="limit", offer_amount=None, receiving_address=None, worst_acceptable_price=None):
