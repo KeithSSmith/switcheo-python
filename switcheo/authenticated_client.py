@@ -291,10 +291,6 @@ class AuthenticatedClient(PublicClient):
         :return: Dictionary with the result status of the deposit attempt.
         """
         create_deposit = self.create_deposit(asset=asset, amount=amount, private_key=private_key)
-        
-        if 'transaction' in create_deposit and 'invoke' in create_deposit['transaction']:
-            del create_deposit['transaction']['invoke']
-
         return self.execute_deposit(deposit_params=create_deposit, private_key=private_key)
 
     def create_deposit(self, asset, amount, private_key):
