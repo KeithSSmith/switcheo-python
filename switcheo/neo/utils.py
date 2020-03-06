@@ -10,7 +10,7 @@ import base58
 from neocore.Cryptography.Crypto import Crypto
 from neocore.KeyPair import KeyPair
 from neocore.Cryptography.Helper import scripthash_to_address
-from switcheo.utils import num2hexstring, stringify_message, reverse_hex
+from switcheo.utils import num2hexstring, stringify_message, reverse_hex, num2varint
 from switcheo.neo.transactions import serialize_transaction
 
 
@@ -33,7 +33,7 @@ def sign_txn_array(messages, private_key_hex):
 
 def encode_message(message):
     message_hex = binascii.hexlify(stringify_message(message).encode('utf-8')).decode()
-    message_hex_length = hex(int(len(message_hex) / 2))[2:]
+    message_hex_length = num2varint(len(message_hex) // 2)
     return '010001f0' + message_hex_length + message_hex + '0000'
 
 

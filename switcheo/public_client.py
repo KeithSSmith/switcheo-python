@@ -350,6 +350,7 @@ class PublicClient(object):
             }
 
         :return: Dictionary containing the sum of all addresses smart contract balances by processing state.
+        
         """
         return self.request.get(path='/exchange/atomic_swap_contracts')
 

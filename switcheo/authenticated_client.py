@@ -389,15 +389,22 @@ class AuthenticatedClient(PublicClient):
         api_params = self.sign_execute_deposit_function[self.blockchain](deposit_params, private_key)
         return self.request.post(path='/deposits/{}/broadcast'.format(deposit_id), json_data=api_params)
 
-    def order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit"):
+
+    def order(self, pair, side, private_key, price=None, quantity=None, use_native_token=True, 
+              order_type="limit", offer_amount=None, receiving_address=None, worst_acceptable_price=None):
         """
         This function is a wrapper function around the create and execute order functions to help make this processes
-        simpler for the end user by combining these requests in 1 step.
-        Execution of this function is as follows::
+        simpler for the end user by combining these requests in 1 step. Trading can take place on normal (spot) markets 
+        and atomic swap markets. The required arguments differ between those cases. 
+        Execution of this function for spot- and swap-markets respectively is as follows::
 
             order(pair="SWTH_NEO", side="buy",
-                  price=0.0002, quantity=100, private_key=kp,
-                  use_native_token=True, order_type="limit")
+                  price=0.0002, quantity=100, 
+                  private_key=kp, use_native_token=True, order_type="limit")
+
+            order(pair="SWTH_ETH", side="buy",
+                  offer_amount=0.1, receiving_address=fea2b883725ef2d194c9060f606cd0a0468a2c59, 
+                  private_key=kp, use_native_token=True, order_type="limit")
 
         The expected return result for this function is the same as the execute_order function::
 
@@ -455,14 +462,22 @@ class AuthenticatedClient(PublicClient):
         :param order_type: The type of order being submitted, currently this can only be a limit order.
         :type order_type: str
         :return: Dictionary of the transaction on the order book.
+        :type offer_amount: str
+        :return: The amount of the asset that is offered in the swap trade.
+        :type receiving_address:
+        :return: The address the tokens received in the swap are sent to.
+        :type worst_acceptable_price:
+        :return: The lower or upper price limit for which the trade will be performed
         """
         create_order = self.create_order(private_key=private_key, pair=pair, side=side, price=price,
                                          quantity=quantity, use_native_token=use_native_token,
-                                         order_type=order_type)
+                                         order_type=order_type, offer_amount=offer_amount, 
+                                         receiving_address=receiving_address, worst_acceptable_price=worst_acceptable_price)
         return self.execute_order(order_params=create_order, private_key=private_key)
 
-    def create_order(self, pair, side, price, quantity, private_key, use_native_token=True, order_type="limit",
-                     otc_address=None):
+    def create_order(self, pair, side, private_key, price=None, quantity=None, use_native_token=True, 
+                     order_type="limit", otc_address=None, offer_amount=None, receiving_address=None, 
+                     worst_acceptable_price=None):
         """
         Function to create an order for the trade pair and details requested.
         Execution of this function is as follows::
@@ -571,6 +586,13 @@ class AuthenticatedClient(PublicClient):
         :param otc_address: The address to trade with for Over the Counter exchanges.
         :type otc_address: str
         :return: Dictionary of order details to specify which parts of the trade will be filled (taker) or open (maker)
+        :type offer_amount: str
+        :return: The amount of the asset that is offered in the swap trade.
+        :type receiving_address:
+        :return: The address the tokens received in the swap are sent to.
+        :type worst_acceptable_price:
+        :return: The lower or upper price limit for which the trade will be performed
+
         """
         if side.lower() not in ["buy", "sell"]:
             raise ValueError("Allowed trade types are buy or sell, you entered {}".format(side.lower()))
@@ -578,17 +600,27 @@ class AuthenticatedClient(PublicClient):
             raise ValueError("Allowed order type is limit, you entered {}".format(order_type.lower()))
         if order_type.lower() == "otc" and otc_address is None:
             raise ValueError("OTC Address is required when trade type is otc (over the counter).")
+
         order_params = {
             "blockchain": self.blockchain,
             "pair": pair,
             "side": side,
-            "price": '{:.8f}'.format(price) if order_type.lower() != "market" else None,
-            "quantity": str(self.blockchain_amount[self.blockchain](quantity)),
             "use_native_tokens": use_native_token,
-            "order_type": order_type,
             "timestamp": get_epoch_milliseconds(),
             "contract_hash": self.contract_hash
         }
+
+        if not offer_amount is None:
+            order_params["price"] = None
+            order_params["offer_amount"] = str(self.blockchain_amount[self.blockchain](offer_amount))
+            order_params["receiving_address"] = receiving_address
+            order_params["worst_acceptable_price"] = worst_acceptable_price
+            order_params["order_type"] = "market"
+        else:
+            order_params["price"] = '{:.8f}'.format(price) if order_type.lower() != "market" else None
+            order_params["quantity"] = str(self.blockchain_amount[self.blockchain](quantity))
+            order_params["order_type"] = order_type
+
         api_params = self.sign_create_order_function[self.blockchain](order_params, private_key)
         return self.request.post(path='/orders', json_data=api_params)
 

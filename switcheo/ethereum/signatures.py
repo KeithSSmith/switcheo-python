@@ -206,7 +206,7 @@ def sign_execute_order(order_params, private_key):
     execute_params = {
         'signatures': {
             'fill_groups': sign_txn_array(messages=order_params['fill_groups'], private_key=private_key),
-            'fills': {},
+            'fills': sign_txn_array(messages=order_params['fills'], private_key=private_key),
             'makes': sign_txn_array(messages=order_params['makes'], private_key=private_key),
         }
     }
